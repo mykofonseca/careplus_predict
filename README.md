@@ -8,6 +8,8 @@
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 [![Status](https://img.shields.io/badge/status-Em%20Desenvolvimento-yellow)]()
 
+O projeto também possui correlação de uso com o repositório: [Blua Diagnostic]([url](https://github.com/lincoln743/bluadiagnostics))
+
 ---
 
 ## Sobre o Projeto
