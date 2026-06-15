@@ -800,182 +800,35 @@
     .reveal { opacity: 1; transform: none; transition: none; }
   }
 
- /* ── RESPONSIVE: tablet / large mobile (≤900px) ── */
-@media (max-width: 900px) {
-
-  /* --- Nav --- */
-  nav { padding: 14px 20px; position: relative; }
-  .nav-toggle { display: flex; }
-  .nav-links {
-    display: none;
-    position: absolute;
-    top: 100%; left: 0; right: 0;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    background: rgba(5,5,8,0.97);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    padding: 12px 20px 18px;
+  @media (max-width: 900px) {
+    nav { padding: 14px 20px; position: relative; }
+    .nav-toggle { display: flex; }
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 100%; left: 0; right: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      background: rgba(5,5,8,0.97);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 12px 20px 18px;
+    }
+    .nav-links a { width: 100%; padding: 10px 0; font-size: 16px; }
+    nav.nav-open .nav-links { display: flex; }
+    section { padding: 100px 22px 64px; }
+    #hero { padding: 0 22px; }
+    .dores-grid { grid-template-columns: 1fr; }
+    .dor-item:nth-child(even) { padding-left: 0; border-left: none; }
+    .processo-layout, .ia-layout, .roadmap-layout { grid-template-columns: 1fr; gap: 40px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .painel-screens { grid-template-columns: 1fr; }
+    .stats-bar { flex-direction: column; }
+    .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+    .ending-meta { flex-direction: column; gap: 12px; }
   }
-  .nav-links a { width: 100%; padding: 10px 0; font-size: 16px; }
-  nav.nav-open .nav-links { display: flex; }
-
-  /* --- Sections --- */
-  section { padding: 90px 24px 60px; }
-  #hero { padding: 0 24px; }
-  #hero .hero-inner[style] { padding: 0 16px !important; }
-
-  /* --- Page 02 Dores --- */
-  .dores-grid { margin-top: 40px; }
-  .dor-item { grid-template-columns: 48px 1fr; gap: 16px; padding: 22px 18px; }
-  .dor-num { font-size: 22px; }
-  .dor-title { font-size: 22px; }
-  .dor-body { font-size: 18px; }
-
-  /* --- Grids de 2 colunas → 1 coluna --- */
-  .processo-layout,
-  .ia-layout,
-  .roadmap-layout { grid-template-columns: 1fr; gap: 40px; }
-  .features-grid { grid-template-columns: 1fr; }
-  .painel-screens { grid-template-columns: 1fr; }
-
-  /* --- Fontes de body --- */
-  .pstep-body { font-size: 18px; }
-  .feat-body { font-size: 18px; }
-  .phase-item { font-size: 18px; }
-  .ia-type-body { font-size: 18px; }
-
-  /* --- Stats bar --- */
-  .stats-bar { flex-direction: column; }
-  .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
-
-  /* --- Page 08 Encerramento: QR codes somem (sobreporiam no mobile) --- */
-  .ending-qr-left,
-  .ending-qr-right { display: none; }
-  #ending { padding: 90px 24px 60px; }
-  .ending-question { font-size: 20px; margin-bottom: 16px; }
-  .ending-project { font-size: 22px; margin-bottom: 20px; }
-  .ending-member { font-size: 18px; }
-  .ending-meta {
-    flex-direction: column;
-    gap: 10px;
-    padding: 18px 28px;
-    font-size: 14px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  /* --- Footer --- */
-  footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px 20px; }
-  .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
-
-  /* --- Modo apresentação --- */
-  body.present-mode section,
-  body.present-mode #hero,
-  body.present-mode #ending { padding: 80px 40px 80px !important; }
-}
-
-.hero-inner { padding: 0 24px; }
-
-
-/* ── RESPONSIVE: mobile padrão (≤600px) ── */
-@media (max-width: 600px) {
-
-  /* --- Sections --- */
-  section { padding: 80px 16px 52px; }
-  #hero { padding: 0 16px; }
-
-  /* --- Hero --- */
-  .hero-glow { width: 320px; height: 320px; left: 50%; }
-  .chevron-deco { display: none; }
-  .hero-badge { font-size: 12px; padding: 7px 14px; }
-  .hero-cta-row { flex-direction: column; align-items: stretch; gap: 12px; }
-  .btn-primary,
-  .btn-ghost { width: 100%; text-align: center; padding: 14px 24px; font-size: 15px; }
-
-  /* --- Page 02 Dores --- */
-  .dor-item { grid-template-columns: 1fr; gap: 8px; padding: 18px 14px; }
-  .dor-num { font-size: 18px; padding-top: 0; }
-  .dor-title { font-size: 20px; }
-  .dor-body { font-size: 16px; }
-
-  /* --- Page 03 Processo: login card sem overflow --- */
-  .login-card { padding: 24px 16px; }
-  .pstep-title { font-size: 20px; }
-  .pstep-body { font-size: 16px; }
-
-  /* --- Page 04 Projeto --- */
-  .feat-title { font-size: 18px; }
-  .feat-body { font-size: 16px; }
-  .feat-cell { padding: 18px 16px; }
-
-  /* --- Page 05 Painel: mocks não estouram --- */
-  .screen-body { padding: 16px 12px; }
-  .dash-stat-val { font-size: 20px; }
-  .msg { max-width: 92%; font-size: 14px; }
-
-  /* --- Page 06 IA --- */
-  .ia-type-title { font-size: 22px; }
-  .ia-type-body { font-size: 16px; }
-
-  /* --- Page 07 Roadmap --- */
-  .phase-title { font-size: 17px; }
-  .phase-item { font-size: 16px; }
-  .phone-mock { max-width: 100%; }
-
-  /* --- Stats bar --- */
-  .stat-item { padding: 20px 16px; }
-  .stat-val { font-size: clamp(22px, 7vw, 36px); }
-  .stat-label { font-size: 13px; }
-
-  /* --- Page 08 Encerramento --- */
-  #ending { padding: 72px 16px 52px; }
-  .ending-question { font-size: 17px; }
-  .ending-obrigado { font-size: clamp(44px, 16vw, 80px); margin-bottom: 24px; }
-  .ending-project { font-size: 18px; margin-bottom: 14px; }
-  .ending-member { font-size: 15px; }
-  .ending-team { gap: 6px; margin-bottom: 20px; }
-  .ending-meta {
-    padding: 14px 16px;
-    font-size: 13px;
-    gap: 8px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .hero-inner { padding: 0 16px; }
-
-
-  /* --- Controles de apresentação --- */
-  #pres-controls { padding: 10px 14px; gap: 14px; bottom: 20px; }
-  #pres-toggle { bottom: 20px; right: 16px; padding: 10px 16px; font-size: 13px; }
-  #pres-counter { font-size: 13px; min-width: 48px; }
-  body.present-mode section,
-  body.present-mode #hero,
-  body.present-mode #ending { padding: 72px 16px 80px !important; }
-
-  /* --- Footer --- */
-  footer { padding: 20px 16px; }
-  .footer-links { gap: 12px; font-size: 13px; }
-}
-
-/* ── RESPONSIVE: celulares muito pequenos (≤380px) ── */
-@media (max-width: 380px) {
-  .display-xl { font-size: clamp(40px, 14vw, 72px); }
-  .display-lg { font-size: clamp(24px, 8vw, 40px); }
-  .body-lg { font-size: 15px; }
-  .hero-cta-row { gap: 10px; }
-  .btn-primary,
-  .btn-ghost { padding: 12px 16px; font-size: 14px; }
-  .dor-title { font-size: 17px; }
-  .ending-obrigado { font-size: clamp(36px, 13vw, 56px); }
-  .ending-member { font-size: 13px; }
-  .stat-val { font-size: clamp(18px, 6vw, 28px); }
-  .tech-tag { font-size: 11px; }
-  #pres-toggle span { display: none; }
-  #pres-toggle { padding: 10px 12px; }
-}
 
   /* ── PRESENTATION MODE (moved here from a separate style block in body, for cleaner organization) ── */
   body.present-mode {
@@ -1124,38 +977,48 @@
     font-weight: 300;
   }
 
-  /* ── QR CODES (Page 08) — desktop: absolute positioning flanking the content ── */
   .ending-qr-left,
-  .ending-qr-right {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    text-align: center;
-  }
-  .ending-qr-left  { left: 150px; }
-  .ending-qr-right { right: 150px; }
+.ending-qr-right {
+  position: static !important;
+  transform: none !important;
+  margin: 24px auto 0 !important;
+}
 
-  .ending-qr-img {
-    width: 380px;
-    height: 380px;
-    display: block;
-    border-radius: 12px;
-  }
-  .ending-qr-label {
-    font-size: 35px;
-    color: var(--gray-2);
-    margin-top: 12px;
-    font-weight: 500;
-  }
+.ending-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
 
-  /* Ending content: centered flex column */
-  .ending-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-  }
-  .ending-team { margin-bottom: 24px; }
+.ending-team {
+  margin-bottom: 24px;
+}
+
+.ending-obrigado {
+  font-size: clamp(54px, 18vw, 92px);
+}
+
+.ending-project {
+  font-size: 18px;
+}
+
+.ending-member {
+  font-size: 18px;
+}
+
+.ending-meta {
+  font-size: 13px;
+  gap: 10px;
+  padding: 16px 20px;
+  border-radius: 18px;
+}
+
+.ending-qr-left img,
+.ending-qr-right img {
+  width: 140px !important;
+  height: 140px !important;
+}
 
 </style>
 </head>
@@ -1193,7 +1056,7 @@
     <path d="M80 20 L240 150 L80 280" stroke="#3355FF" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.4"/>
   </svg>
 
-  <div class="hero-inner" style="max-width:1280px;margin:0 auto;">    
+  <div class="hero-inner" style="padding:0 56px;max-width:1280px;margin:0 auto;">
     <div class="reveal">
       <span class="hero-badge">Blua · CarePlus · Bupa · FIAP 2026</span>
     </div>
@@ -1631,15 +1494,15 @@
   <div class="ending-glow"></div>
   
   <!-- QR Code Left -->
-  <div class="ending-qr-left reveal" style="transition-delay:0.35s;">
-    <img src="docs/Presentation QR Code.png" alt="QR Code Presentation" class="ending-qr-img">
-    <p class="ending-qr-label">Presentation</p>
+  <div class="ending-qr-left reveal" style="transition-delay:0.35s;position:absolute;left:150px;top:50%;transform:translateY(-50%);text-align:center;">
+    <img src="docs/Presentation QR Code.png" alt="QR Code Presentation" style="width:380px;height:380px;display:block;border-radius:12px;">
+    <p style="font-size:35px;color:var(--gray-2);margin-top:12px;font-weight:500;">Presentation</p>
   </div>
   
   <!-- QR Code Right -->
-  <div class="ending-qr-right reveal" style="transition-delay:0.35s;">
-    <img src="docs/LinkTree QR Code.png" alt="QR Code LinkTree" class="ending-qr-img">
-    <p class="ending-qr-label">LinkTree</p>
+  <div class="ending-qr-right reveal" style="transition-delay:0.35s;position:absolute;right:150px;top:50%;transform:translateY(-50%);text-align:center;">
+    <img src="docs/LinkTree QR Code.png" alt="QR Code LinkTree" style="width:380px;height:380px;display:block;border-radius:12px;">
+    <p style="font-size:35px;color:var(--gray-2);margin-top:12px;font-weight:500;">LinkTree</p>
   </div>
   
   
@@ -1789,35 +1652,20 @@ function presPrev() {
   if (currentSlide > 0) presGo(currentSlide - 1);
 }
 
-// Cache das posições dos slides (calculado antes do present-mode fixar tudo)
-let slideTops = [];
-
 function enterPresMode() {
   presentMode = true;
-
-  // Fullscreen
-  if (document.documentElement.requestFullscreen) {
-    document.documentElement.requestFullscreen();
-  }
-
-  // Captura offsetTop ANTES de adicionar present-mode
-  slideTops = SLIDE_IDS.map(id => {
-    const el = document.getElementById(id);
-    return el ? el.offsetTop : 0;
-  });
-
   document.body.classList.add('present-mode');
 
   let best = 0;
-  const mid = window.scrollY + window.innerHeight / 2;
-  slideTops.forEach((top, i) => {
-    if (top <= mid) best = i;
+  SLIDE_IDS.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 300) best = i;
   });
   currentSlide = best;
 
-  SLIDE_IDS.forEach((id) => {
+  SLIDE_IDS.forEach((id, i) => {
     const el = document.getElementById(id);
-    el.classList.remove('slide-active', 'slide-exit');
+    el.classList.remove('slide-active','slide-exit');
   });
   getSlideEl(currentSlide).classList.add('slide-active');
   updateDots(currentSlide);
@@ -1826,28 +1674,16 @@ function enterPresMode() {
   document.getElementById('pres-icon').innerHTML = `<path d="M2 2l10 10M12 2L2 12" stroke="white" stroke-width="1.5" stroke-linecap="round"/>`;
 }
 
-document.addEventListener('fullscreenchange', () => {
-  if (!document.fullscreenElement && presentMode) {
-    exitPresMode();
-  }
-});
-
 function exitPresMode() {
   presentMode = false;
-
-  // Sai do fullscreen
-  if (document.fullscreenElement && document.exitFullscreen) {
-    document.exitFullscreen();
-  }
-
   document.body.classList.remove('present-mode');
   SLIDE_IDS.forEach(id => {
     const el = document.getElementById(id);
-    el.classList.remove('slide-active', 'slide-exit');
+    el.classList.remove('slide-active','slide-exit');
   });
   document.getElementById('pres-toggle-label').textContent = 'Apresentar';
   document.getElementById('pres-icon').innerHTML = `<rect x="1" y="1" width="12" height="9" rx="1.5" stroke="white" stroke-width="1.5" fill="none"/><path d="M5 13h4M7 10v3" stroke="white" stroke-width="1.5" stroke-linecap="round"/>`;
-  getSlideEl(currentSlide).scrollIntoView({ behavior: 'smooth' });
+  getSlideEl(currentSlide).scrollIntoView({ behavior:'smooth' });
 }
 
 function togglePresMode() {
