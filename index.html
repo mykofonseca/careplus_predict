@@ -3,10 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Blua / CarePlus Predict — plataforma de telessaúde preditiva com três IAs integradas: RAG clínico, prescrição com supervisão médica (HITL) e chat empático com contexto real de wearable. Projeto FIAP 2026, Grupo NextGen.">
+<meta name="theme-color" content="#050508">
+<meta property="og:title" content="Blua — Sua saúde, compreendida.">
+<meta property="og:description" content="CarePlus Predict: telessaúde preditiva com IA clínica, prescrição com supervisão médica e dados reais de wearable. Grupo NextGen · FIAP 2026.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%233355FF'/%3E%3Cpath d='M32 22 L70 50 L32 78' stroke='white' stroke-width='14' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
 <title>Blua — Sua saúde, compreendida.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
@@ -20,10 +27,13 @@
     --gray-2: #A0A0B0;
     --gray-3: #404058;
     --gray-4: #18181f;
-    --page-max: 1920px;
   }
 
   html { scroll-behavior: smooth; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
 
   body {
     background: var(--black);
@@ -34,11 +44,21 @@
     overflow-x: hidden;
   }
 
+  /* ── ACCESSIBILITY: keyboard focus ── */
+  a:focus-visible,
+  button:focus-visible,
+  .pres-dot:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--blue-bright);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
   /* ── NAV ── */
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
-    z-index: 100;
+    z-index: 500;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -54,17 +74,33 @@
     text-transform: uppercase;
   }
   .nav-brand span { color: var(--gray-2); font-weight: 400; display: block; font-size: 13px; letter-spacing: 0.04em; }
-  .nav-links { display: flex; gap: 40px; align-items: center; }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
   .nav-links a {
     color: var(--gray-2);
     text-decoration: none;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 500;
     letter-spacing: 0.01em;
     transition: color 0.2s;
+    white-space: nowrap;
   }
   .nav-links a:hover { color: var(--white); }
   .nav-links a.active { color: var(--white); font-weight: 700; }
+
+  /* ── NAV: mobile hamburger toggle ── */
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    width: 40px; height: 40px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .nav-toggle:hover { border-color: rgba(255,255,255,0.3); }
+  .nav-toggle svg { display: block; }
   .page-badge {
     background: var(--blue);
     color: #fff;
@@ -117,7 +153,7 @@
   .display-xl .blue { color: var(--blue-bright); }
 
   .display-lg {
-    font-size: clamp(40px, 5.5vw, 76px);
+    font-size: clamp(30px, 4.5vw, 66px);
     font-weight: 900;
     line-height: 1.0;
     letter-spacing: -0.03em;
@@ -232,7 +268,7 @@
   #dores { border-top: 1px solid rgba(255,255,255,0.07); }
   .dores-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 0;
     margin-top: 68px;
   }
@@ -242,27 +278,28 @@
   }
   .dor-item {
     padding: 44px 0;
-    border-top: 1px solid rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.09);
     display: grid;
     grid-template-columns: 64px 1fr;
     gap: 28px;
     align-items: start;
+    padding: 30px;
   }
-  .dor-item:nth-child(even) { padding-left: 60px; border-left: 1px solid rgba(255,255,255,0.09); }
   .dor-num {
-    font-size: 15px;
+    font-size: 30px;
     font-weight: 800;
     color: var(--blue-bright);
     letter-spacing: 0.06em;
     padding-top: 4px;
   }
   .dor-title {
-    font-size: 22px;
+    font-size: 28px;
     font-weight: 700;
     margin-bottom: 12px;
     letter-spacing: -0.01em;
   }
-  .dor-body { font-size: 17px; color: var(--gray-2); line-height: 1.75; }
+  .dor-body { font-size: 22px; color: var(--gray-2); line-height: 1.75;}
+  
 
   /* ── PAGE 03 — PROCESSO ── */
   #processo { border-top: 1px solid rgba(255,255,255,0.07); }
@@ -277,8 +314,8 @@
   .pstep {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 40px 0;
+    gap: 6px;
+    padding: 30px 0;
     border-top: 1px solid rgba(255,255,255,0.08);
     position: relative;
   }
@@ -295,9 +332,9 @@
     font-weight: 800;
     letter-spacing: -0.01em;
   }
-  .pstep-body { font-size: 16px; color: var(--gray-2); line-height: 1.75; }
+  .pstep-body { font-size: 21px; color: var(--gray-2); line-height: 1.75; }
   .arrow-down {
-    width: 22px; height: 28px;
+    width: 0px; height: 0px;
     margin: 4px 0 -8px 0;
     opacity: 0.4;
   }
@@ -374,10 +411,10 @@
   }
   .feat-cell {
     background: var(--black);
-    padding: 44px 40px;
+    padding: 24px 30px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
     transition: background 0.2s;
   }
   .feat-cell:hover { background: #0a0a12; }
@@ -390,15 +427,15 @@
     font-size: 20px;
   }
   .feat-title { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
-  .feat-body { font-size: 16px; color: var(--gray-2); line-height: 1.75; }
+  .feat-body { font-size: 22px; color: var(--gray-2); line-height: 1.75; }
 
   /* ── PAGE 05 — PAINEL ── */
   #painel { border-top: 1px solid rgba(255,255,255,0.07); }
   .painel-screens {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-top: 68px;
+    gap: 12px;
+    margin-top: 20px;
   }
   .screen-card {
     background: #0a0a12;
@@ -497,16 +534,16 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 64px;
-    margin-top: 68px;
+    margin-top: 38px;
     align-items: start;
   }
-  .ia-info { display: flex; flex-direction: column; gap: 44px; }
-  .ia-type { display: flex; flex-direction: column; gap: 12px; }
+  .ia-info { display: flex; flex-direction: column; gap: 34px; }
+  .ia-type { display: flex; flex-direction: column; gap: 5px; }
   .ia-type-label {
     font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--blue-bright);
   }
   .ia-type-title { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; }
-  .ia-type-body { font-size: 16px; color: var(--gray-2); line-height: 1.75; }
+  .ia-type-body { font-size: 20px; color: var(--gray-2); line-height: 1.75; }
   .ia-divider { height: 1px; background: rgba(255,255,255,0.07); }
 
   /* tech spec tag */
@@ -572,7 +609,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 80px;
     align-items: center;
-    margin-top: 68px;
+    margin-top: 28px;
   }
   .phases { display: flex; flex-direction: column; gap: 0; }
   .phase {
@@ -599,8 +636,8 @@
   .phase-status.done { background: rgba(22,163,74,0.15); color: #4ade80; }
   .phase-status.progress { background: rgba(51,85,255,0.2); color: var(--blue-bright); }
   .phase-status.future { background: rgba(255,255,255,0.07); color: var(--gray-2); }
-  .phase-items { display: flex; flex-direction: column; gap: 9px; padding-left: 48px; }
-  .phase-item { font-size: 15px; color: var(--gray-2); display: flex; align-items: flex-start; gap: 10px; }
+  .phase-items { display: flex; flex-direction: column; gap: 3px; padding-left: 48px; }
+  .phase-item { font-size: 22px; color: var(--gray-2); display: flex; align-items: flex-start; gap: 10px; }
   .phase-item::before { content: '—'; color: var(--blue-bright); flex-shrink: 0; margin-top: 1px; }
 
   /* mobile app mock */
@@ -712,7 +749,7 @@
   }
   .ending-content { position: relative; z-index: 1; max-width: 760px; }
   .ending-question {
-    font-size: 22px; color: var(--blue-bright); font-weight: 600; margin-bottom: 28px;
+    font-size: 30px; color: var(--blue-bright); font-weight: 600; margin-bottom: 28px;
     letter-spacing: 0.01em;
   }
   .ending-obrigado {
@@ -723,13 +760,13 @@
     margin-bottom: 44px;
   }
   .ending-project {
-    font-size: 22px; font-weight: 700; margin-bottom: 32px; color: var(--gray-1);
+    font-size: 36px; font-weight: 700; margin-bottom: 32px; color: var(--gray-1);
   }
   .ending-team {
     display: flex; flex-direction: column; gap: 10px;
     margin-bottom: 52px;
   }
-  .ending-member { font-size: 18px; color: var(--gray-2); }
+  .ending-member { font-size: 30px; color: var(--gray-2); }
   .ending-meta {
     padding: 22px 40px;
     border: 1px solid rgba(255,255,255,0.1);
@@ -764,8 +801,22 @@
   }
 
   @media (max-width: 900px) {
-    nav { padding: 14px 20px; }
-    .nav-links { display: none; }
+    nav { padding: 14px 20px; position: relative; }
+    .nav-toggle { display: flex; }
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 100%; left: 0; right: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      background: rgba(5,5,8,0.97);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 12px 20px 18px;
+    }
+    .nav-links a { width: 100%; padding: 10px 0; font-size: 16px; }
+    nav.nav-open .nav-links { display: flex; }
     section { padding: 100px 22px 64px; }
     #hero { padding: 0 22px; }
     .dores-grid { grid-template-columns: 1fr; }
@@ -778,6 +829,153 @@
     footer { flex-direction: column; gap: 12px; text-align: center; }
     .ending-meta { flex-direction: column; gap: 12px; }
   }
+
+  /* ── PRESENTATION MODE (moved here from a separate style block in body, for cleaner organization) ── */
+  body.present-mode {
+    overflow: hidden;
+  }
+  body.present-mode .divider { display: none; }
+  body.present-mode footer { display: none; }
+
+  body.present-mode section,
+  body.present-mode #hero,
+  body.present-mode #ending {
+    position: fixed !important;
+    inset: 0;
+    width: 100vw;
+    max-width: 100vw;
+    min-height: 100vh;
+    height: 100vh;
+    padding: 88px 80px 88px !important;
+    margin: 0 !important;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    /* slide states */
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(40px);
+    transition: opacity 0.55s cubic-bezier(.4,0,.2,1),
+                transform 0.55s cubic-bezier(.4,0,.2,1);
+    z-index: 2;
+  }
+  body.present-mode section.slide-active,
+  body.present-mode #hero.slide-active,
+  body.present-mode #ending.slide-active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+    z-index: 3;
+  }
+  body.present-mode section.slide-exit,
+  body.present-mode #hero.slide-exit,
+  body.present-mode #ending.slide-exit {
+    opacity: 0;
+    transform: translateY(-40px);
+    pointer-events: none;
+    z-index: 2;
+  }
+  /* reveal all children instantly in present mode */
+  body.present-mode .reveal { opacity: 1 !important; transform: none !important; }
+
+  /* ── PRESENTATION CONTROLS ── */
+  #pres-controls {
+    display: none;
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    background: rgba(5,5,8,0.92);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 999px;
+    padding: 12px 24px;
+    gap: 24px;
+    align-items: center;
+  }
+  body.present-mode #pres-controls { display: flex; }
+
+  .pres-btn {
+    background: none;
+    border: none;
+    color: #A0A0B0;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 20px;
+    line-height: 1;
+    transition: color 0.2s, background 0.2s;
+    display: flex; align-items: center;
+  }
+  .pres-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
+  .pres-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+  #pres-counter {
+    font-size: 15px;
+    font-weight: 700;
+    color: #A0A0B0;
+    letter-spacing: 0.08em;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  #pres-dots {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .pres-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: background 0.2s, width 0.2s;
+  }
+  .pres-dot.active {
+    background: #3355FF;
+    width: 20px;
+    border-radius: 3px;
+  }
+
+  /* ── TOGGLE BUTTON (always visible) ── */
+  #pres-toggle {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 300;
+    background: #3355FF;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 22px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 24px rgba(51,85,255,0.4);
+    transition: background 0.2s, transform 0.15s;
+  }
+  #pres-toggle:hover { background: #4D6BFF; transform: translateY(-1px); }
+
+  /* click-anywhere overlay (present mode) */
+  #click-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    cursor: pointer;
+  }
+  body.present-mode #click-overlay { display: block; }
+  body.present-mode #pres-controls,
+  body.present-mode #pres-toggle { z-index: 250; pointer-events: all; }
+
+  .clear{
+    font-weight: 300;
+  }
 </style>
 </head>
 <body>
@@ -786,23 +984,30 @@
 <nav>
   <div class="nav-brand">
     Apresentação
-    <span>SM: Allan Roberto · Predict V2</span>
+    <span>SM: Allan Roberto · Predict</span>
   </div>
-  <div class="nav-links">
+  <div class="nav-links" id="nav-links">
     <a href="#hero" class="active">Home</a>
     <a href="#dores">Problema</a>
     <a href="#processo">Solução</a>
+    <a href="#projeto">Projeto</a>
+    <a href="#painel">Painel</a>
     <a href="#ia">IA</a>
     <a href="#roadmap">Roadmap</a>
     <a href="#ending">Encerramento</a>
   </div>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="nav-links">
+    <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">
+      <path d="M1 1h16M1 7h16M1 13h16" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+  </button>
   <span class="page-badge" id="page-badge">Page 01</span>
 </nav>
 
 <!-- PAGE 01 — HERO -->
 <section id="hero" style="max-width:none;padding-left:0;padding-right:0;">
   <div class="hero-glow"></div>
-  <svg class="chevron-deco" style="left:-60px;top:50%;transform:translateY(-50%)" width="220" height="300" viewBox="0 0 220 300" fill="none">
+  <svg class="chevron-deco" aria-hidden="true" style="left:-60px;top:50%;transform:translateY(-50%)" width="220" height="300" viewBox="0 0 220 300" fill="none">
     <path d="M20 20 L180 150 L20 280" stroke="#3355FF" stroke-width="40" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
     <path d="M80 20 L240 150 L80 280" stroke="#3355FF" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.4"/>
   </svg>
@@ -823,7 +1028,7 @@
     </div>
     <div class="hero-cta-row reveal" style="transition-delay:0.3s">
       <a href="#processo" class="btn-primary">Ver o produto</a>
-      <a href="#ending" class="btn-ghost">Grupo NextGen · 1TDSPE</a>
+      <a href="#ending" class="btn-ghost">Grupo NextGen · 1CCPS</a>
     </div>
   </div>
 </section>
@@ -857,7 +1062,7 @@
         <p class="dor-body">Hipertensão, diabetes e DPOC representam 40–60% do custo assistencial das operadoras. O plano só descobre o risco quando o beneficiário já está no pronto-socorro.</p>
       </div>
     </div>
-    <div class="dor-item reveal" style="grid-column:1/-1; max-width:620px;">
+    <div class="dor-item reveal">
       <span class="dor-num">03.</span>
       <div>
         <p class="dor-title">IA sem ancoragem clínica</p>
@@ -885,13 +1090,13 @@
         <p class="pstep-title">Samsung Health SDK + Galaxy Watch</p>
         <p class="pstep-body">268 dias de dados reais capturados: FC média, SpO₂, passos e sono via Galaxy Watch 4. Pipeline: Samsung Health SDK 6.0 → Supabase (health_readings) → dashboard em tempo real. Origem marcada como <code style="color:var(--blue-bright);font-size:14px">is_simulated=false</code>.</p>
       </div>
-      <svg class="arrow-down" viewBox="0 0 22 28" fill="none"><path d="M11 2v22M4 18l7 8 7-8" stroke="#3355FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg class="arrow-down" aria-hidden="true" viewBox="0 0 22 28" fill="none"><path d="M11 2v22M4 18l7 8 7-8" stroke="#3355FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <div class="pstep reveal" style="transition-delay:0.1s">
         <span class="pstep-label">Etapa 02 · Inteligência</span>
         <p class="pstep-title">Blua (Python ML) + Groq LLM</p>
         <p class="pstep-body">Serviço Blua centraliza embeddings via Sentence-Transformer <strong style="color:#fff">multilingual-e5-small</strong> (384 dim, PT/EN). LLM: Llama 3.1 70B via Groq — 50ms de latência, 250 tokens/s. Backend Fastify (Node.js) nunca chama o Groq diretamente: toda chamada LLM passa pelo Blua, garantindo portabilidade.</p>
       </div>
-      <svg class="arrow-down" viewBox="0 0 22 28" fill="none"><path d="M11 2v22M4 18l7 8 7-8" stroke="#3355FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg class="arrow-down" aria-hidden="true" viewBox="0 0 22 28" fill="none"><path d="M11 2v22M4 18l7 8 7-8" stroke="#3355FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <div class="pstep reveal" style="transition-delay:0.2s">
         <span class="pstep-label">Etapa 03 · Decisão</span>
         <p class="pstep-title">Score de risco + HITL obrigatório</p>
@@ -900,14 +1105,14 @@
     </div>
     <div class="login-card reveal" style="transition-delay:0.15s">
       <div class="app-icon">Care<br>Plus</div>
-      <p class="card-welcome">CarePlus Predict V2</p>
+      <p class="card-welcome">CarePlus Predict</p>
       <div class="tab-row">
         <div class="tab-btn">Paciente</div>
         <div class="tab-btn active">Médico</div>
       </div>
-      <input class="card-input" type="text" value="medico@careplus.com" readonly>
-      <input class="card-input" type="password" value="········" readonly>
-      <button class="card-btn">Entrar como Médico</button>
+      <input class="card-input" type="text" value="medico@careplus.com" aria-label="E-mail (exemplo ilustrativo)" readonly tabindex="-1">
+      <input class="card-input" type="password" value="········" aria-label="Senha (exemplo ilustrativo)" readonly tabindex="-1">
+      <button class="card-btn" tabindex="-1" aria-hidden="true">Entrar como Médico</button>
       <span class="card-forgot">Esqueceu sua senha?</span>
       <div style="width:100%;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-wrap:wrap;gap:6px;">
         <span class="tech-tag">Fastify · Node.js</span>
@@ -926,7 +1131,7 @@
   <div class="reveal">
     <p class="section-title">Page 04 · Projeto · Diferenciais técnicos</p>
     <h2 class="display-lg">
-      <strong>CarePlus Predict V2</strong><br>
+      <strong>CarePlus Predict</strong><br>
       <span class="thin">End-to-end em produção</span>
     </h2>
   </div>
@@ -983,10 +1188,10 @@
 <!-- PAGE 05 — PAINEL -->
 <section id="painel">
   <div class="reveal">
-    <p class="section-title">Page 05 · Painel Web Médico · Dashboard React</p>
+    <p class="section-title" style="margin-bottom: 10px;">Page 05 · Painel Web Médico · Dashboard React</p>
     <h2 class="display-lg">
-      <strong>Visão executiva</strong><br>
-      <span class="thin">da carteira em 5 segundos</span>
+      <strong style="font-size: 50px;">Visão executiva  <span style="font-size: 40px;" class="thin"> -> Carteira em 5 segundos</span>
+</strong><br>
     </h2>
   </div>
   <div class="painel-screens">
@@ -1002,11 +1207,9 @@
         </div>
         <p style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-2);margin-bottom:12px;">Pacientes recentes</p>
         <div class="dash-list">
-          <div class="dash-patient-row"><div class="patient-avatar">MA</div><span class="patient-name">Marina Alves · 54 anos</span><span class="status-pill status-warn">Risco médio</span></div>
-          <div class="dash-patient-row"><div class="patient-avatar">JB</div><span class="patient-name">João Bertoldo · 61 anos</span><span class="status-pill status-ok">Saudável</span></div>
-          <div class="dash-patient-row"><div class="patient-avatar">CF</div><span class="patient-name">Cláudia Ferraz · 48 anos</span><span class="status-pill status-risk">Alto risco</span></div>
-          <div class="dash-patient-row"><div class="patient-avatar">RN</div><span class="patient-name">Rafael Nunes · 39 anos</span><span class="status-pill status-ok">Saudável</span></div>
-          <div class="dash-patient-row"><div class="patient-avatar">MF</div><span class="patient-name">Maykon Fonseca <span style="color:var(--blue-bright);font-size:11px;">● REAL · Galaxy Watch</span></span><span class="status-pill status-ok">Saudável</span></div>
+          <div class="dash-patient-row"><div class="patient-avatar">MA</div><span class="patient-name">Marina Alves · 45 anos</span><span class="status-pill status-warn">Risco médio</span></div>
+          <div class="dash-patient-row"><div class="patient-avatar">CF</div><span class="patient-name">Cláudia Ferraz · 26 anos</span><span class="status-pill status-risk">Alto risco</span></div>
+          <div class="dash-patient-row"><div class="patient-avatar">MF</div><span class="patient-name">Maykon Fonseca · 19 anos <span style="color:var(--blue-bright);font-size:11px;">● REAL · Galaxy Watch</span></span><span class="status-pill status-ok">Saudável</span></div>
         </div>
       </div>
     </div>
@@ -1041,8 +1244,8 @@
           <div class="rx-id">PT-9F2A-31</div>
           <div class="rx-type">Losartana 50mg · 1x/dia · 30 dias · controle pressórico</div>
           <div class="rx-actions">
-            <button class="rx-approve">✓ Aprovar</button>
-            <button class="rx-reject">✕ Rejeitar</button>
+            <button class="rx-approve" tabindex="-1" aria-hidden="true">✓ Aprovar</button>
+            <button class="rx-reject" tabindex="-1" aria-hidden="true">✕ Rejeitar</button>
           </div>
         </div>
         <div class="rx-card" style="opacity:0.6">
@@ -1051,8 +1254,8 @@
           <div class="rx-id">PT-7C04-88</div>
           <div class="rx-type">Metformina 850mg · 2x/dia após refeições · 60 dias</div>
           <div class="rx-actions">
-            <button class="rx-approve">✓ Aprovar</button>
-            <button class="rx-reject">✕ Rejeitar</button>
+            <button class="rx-approve" tabindex="-1" aria-hidden="true">✓ Aprovar</button>
+            <button class="rx-reject" tabindex="-1" aria-hidden="true">✕ Rejeitar</button>
           </div>
         </div>
         <p style="font-size:13px;color:var(--gray-2);margin-top:10px;">Revisor vê apenas código BNF — nome real nunca exposto. Trilha de auditoria gravada a cada decisão (CFM 2.314/2022).</p>
@@ -1065,9 +1268,9 @@
         <div class="app-icon" style="width:52px;height:52px;font-size:11px;">Care<br>Plus</div>
         <p style="font-weight:700;font-size:16px;">Bem-vindo de volta</p>
         <p style="font-size:14px;color:var(--gray-2);margin-top:-8px;">3 temas disponíveis: Claro · Escuro · Futurista</p>
-        <input class="card-input" type="text" value="medico@careplus.com" readonly style="width:100%">
-        <input class="card-input" type="password" value="········" readonly style="width:100%">
-        <button class="card-btn" style="width:100%">Entrar</button>
+        <input class="card-input" type="text" value="medico@careplus.com" aria-label="E-mail (exemplo ilustrativo)" readonly tabindex="-1" style="width:100%">
+        <input class="card-input" type="password" value="········" aria-label="Senha (exemplo ilustrativo)" readonly tabindex="-1" style="width:100%">
+        <button class="card-btn" tabindex="-1" aria-hidden="true" style="width:100%">Entrar</button>
         <p style="font-size:13px;color:var(--gray-2);text-align:center;">React Native 0.73 (mobile) · React (dashboard web)</p>
       </div>
     </div>
@@ -1080,10 +1283,7 @@
 <section id="ia">
   <div class="reveal">
     <p class="section-title">Page 06 · Três IAs integradas · Arquitetura LLM</p>
-    <h2 class="display-lg">
-      Inteligência artificial<br>
-      <strong>com ancoragem clínica</strong>
-    </h2>
+    <strong class="display-lg" style="font-size: 50px">AI de Ancoragem clínica</strong>
   </div>
   <div class="ia-layout">
     <div class="ia-info">
@@ -1135,9 +1335,9 @@
         <div class="msg msg-ai">Sem red flags detectados neste contexto. Recomendo: hidratação agora (400–500ml água), descanso em local com pouca luz. Se a dor persistir acima de 48h, piorar muito ou surgir visão turva, procure atendimento presencial imediatamente. Sua médica Dra. Helena revisará esta conversa amanhã. <em style="color:var(--gray-2);font-size:13px;">⚠ Não substitui consulta médica.</em></div>
       </div>
       <div class="chat-input-row">
-        <input class="chat-input" placeholder="Digite sua mensagem…" readonly>
-        <button class="chat-send">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8h12M10 4l6 4-6 4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <input class="chat-input" placeholder="Digite sua mensagem…" aria-label="Campo de mensagem (demonstrativo)" readonly>
+        <button class="chat-send" aria-label="Enviar mensagem (demonstrativo)" tabindex="-1">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h12M10 4l6 4-6 4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
       <div style="padding:14px 20px;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-wrap:wrap;gap:6px;">
@@ -1156,8 +1356,8 @@
   <div class="reveal">
     <p class="section-title">Page 07 · Roadmap · Estado atual e próximos marcos</p>
     <h2 class="display-lg">
-      <span class="thin">Sistema implementado.</span><br>
-      <strong>Pronto para escalar!</strong>
+      <span class="thin">Sistema implementado - <strong>Pronto para escalar!</strong>
+</span><br>
     </h2>
   </div>
   <div class="roadmap-layout">
@@ -1173,18 +1373,17 @@
           <div class="phase-item">3 IAs integradas: RAG, HITL e Chat empático</div>
           <div class="phase-item">164 chunks vetoriais indexados · 3 protocolos clínicos</div>
           <div class="phase-item">268 dias de dados reais (Samsung Health · Galaxy Watch 4)</div>
-          <div class="phase-item">240 registros de auditoria · LGPD/CFM por design</div>
         </div>
       </div>
       <div class="phase reveal" style="transition-delay:0.1s">
         <div class="phase-header">
           <span class="phase-num progress">2</span>
-          <p class="phase-title">Fase 2 — Piloto controlado · 30 dias</p>
+          <p class="phase-title">Fase 2 — Piloto controlado</p>
           <span class="phase-status progress">Próximo marco</span>
         </div>
         <div class="phase-items">
-          <div class="phase-item">50–200 pacientes voluntários em clínica parceira</div>
-          <div class="phase-item">5–15 médicos · refinamento do gatilho de prescrição</div>
+          <div class="phase-item">Integração com Samsung Health Realizada</div>
+          <div class="phase-item">API Samsung SDK credenciada</div>
           <div class="phase-item">Validação das red flags por keyword vs. casos reais</div>
           <div class="phase-item">Critério de saída: NPS &gt; 50 · médico pagante · 0 incidentes graves</div>
         </div>
@@ -1192,11 +1391,11 @@
       <div class="phase reveal" style="transition-delay:0.2s">
         <div class="phase-header">
           <span class="phase-num future">3</span>
-          <p class="phase-title">Fase 3 — Escala com Care Plus · 6 meses</p>
+          <p class="phase-title">Fase 3 — Escala com Care Plus</p>
           <span class="phase-status future">Futuro</span>
         </div>
         <div class="phase-items">
-          <div class="phase-item">Piloto com operadora de saúde em doenças crônicas</div>
+          <div class="phase-item">Piloto oficial com maior quantidade de contribuintes</div>
           <div class="phase-item">Multi-tenancy (schema por cliente) · SOC 2 Type 2</div>
           <div class="phase-item">Classificador supervisionado substituindo keyword-matching</div>
           <div class="phase-item">Expansão da base RAG com protocolos parceiros</div>
@@ -1237,7 +1436,7 @@
         </div>
       </div>
       <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px 24px;">
-        <p style="font-size:14px;font-weight:700;color:var(--blue-bright);margin-bottom:10px;letter-spacing:0.06em;text-transform:uppercase;">Custo operacional</p>
+        <p style="font-size:14px;font-weight:700;color:var(--blue-bright);margin-bottom:10px;letter-spacing:0.06em;text-transform:uppercase;">Custo operacional (baseado em estimativas)</p>
         <p style="font-size:15px;color:var(--gray-2);line-height:1.7;">Llama 3.1 70B via Groq: <strong style="color:#fff">US$ 0,59/M tokens in · US$ 0,79/M tokens out</strong>. Para 1.000 pacientes com 5 mensagens/dia: <strong style="color:var(--blue-bright)">~US$ 30/mês</strong>. Embeddings rodando localmente no Blua — sem custo por chamada. <span style="color:var(--gray-2);">10× mais barato que GPT-4 (US$ 30/M tokens).</span></p>
       </div>
     </div>
@@ -1249,11 +1448,25 @@
 <!-- PAGE 08 — ENCERRAMENTO -->
 <section id="ending" style="max-width:none">
   <div class="ending-glow"></div>
-  <svg style="position:absolute;left:-40px;top:50%;transform:translateY(-50%);opacity:0.15" width="200" height="260" viewBox="0 0 200 260" fill="none">
+  
+  <!-- QR Code Left -->
+  <div class="ending-qr-left reveal" style="transition-delay:0.35s;position:absolute;left:150px;top:50%;transform:translateY(-50%);text-align:center;">
+    <img src="docs/Presentation QR Code.png" alt="QR Code Presentation" style="width:380px;height:380px;display:block;border-radius:12px;">
+    <p style="font-size:35px;color:var(--gray-2);margin-top:12px;font-weight:500;">Presentation</p>
+  </div>
+  
+  <!-- QR Code Right -->
+  <div class="ending-qr-right reveal" style="transition-delay:0.35s;position:absolute;right:150px;top:50%;transform:translateY(-50%);text-align:center;">
+    <img src="docs/LinkTree QR Code.png" alt="QR Code LinkTree" style="width:380px;height:380px;display:block;border-radius:12px;">
+    <p style="font-size:35px;color:var(--gray-2);margin-top:12px;font-weight:500;">LinkTree</p>
+  </div>
+  
+  
+  <svg aria-hidden="true" style="position:absolute;left:-40px;top:50%;transform:translateY(-50%);opacity:0.15" width="200" height="260" viewBox="0 0 200 260" fill="none">
     <path d="M20 20 L160 130 L20 240" stroke="#3355FF" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
     <path d="M70 20 L210 130 L70 240" stroke="#3355FF" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.4"/>
   </svg>
-  <svg style="position:absolute;right:-40px;top:50%;transform:translateY(-50%) scaleX(-1);opacity:0.15" width="200" height="260" viewBox="0 0 200 260" fill="none">
+  <svg aria-hidden="true" style="position:absolute;right:-40px;top:50%;transform:translateY(-50%) scaleX(-1);opacity:0.15" width="200" height="260" viewBox="0 0 200 260" fill="none">
     <path d="M20 20 L160 130 L20 240" stroke="#3355FF" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
     <path d="M70 20 L210 130 L70 240" stroke="#3355FF" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.4"/>
   </svg>
@@ -1261,16 +1474,17 @@
   <div class="ending-content">
     <p class="ending-question reveal">A próxima pergunta é: vamos fazer isso juntos?</p>
     <h2 class="ending-obrigado reveal" style="transition-delay:0.1s">Obrigado!</h2>
-    <p class="ending-project reveal" style="transition-delay:0.2s">CarePlus Predict V2 · Grupo NextGen · 1TDSPE</p>
+    <p class="ending-project reveal" style="transition-delay:0.2s">CarePlus Predict · Grupo NextGen · 1TDSPE</p>
     <div class="ending-team reveal" style="transition-delay:0.25s">
       <p class="ending-member">Gustavo Franzoti Gonçalves — RM 566983</p>
       <p class="ending-member">Lincoln Simão Pereira — RM 567284</p>
       <p class="ending-member">Maykon Santana Fonseca — RM 567041</p>
       <p class="ending-member">Nicolas Sakaue Nishimura — RM 567752</p>
     </div>
+    
     <div class="ending-meta reveal" style="transition-delay:0.3s">
       <span>FIAP · Junho 2026</span>
-      <span style="color:var(--blue-bright)">·</span>
+      <span style="color:var(--blue-bright)"> · </span>
       <span>Orientador: Prof. Dr. Allan Roberto Molto</span>
     </div>
   </div>
@@ -1278,175 +1492,30 @@
 
 <!-- FOOTER -->
 <footer>
-  <span>Blua · CarePlus Predict V2 · Grupo NextGen · FIAP 2026</span>
+  <span>Blua · CarePlus Predict · Grupo NextGen · FIAP 2026</span>
   <div class="footer-links">
-    <a href="#">Privacidade</a>
-    <a href="#">LGPD</a>
-    <a href="#">CFM 2.314/2022</a>
-    <a href="#">Contato</a>
+    <a href="#projeto">Privacidade</a>
+    <a href="#projeto">LGPD</a>
+    <a href="#processo">CFM 2.314/2022</a>
+    <a href="#ending">Contato</a>
   </div>
 </footer>
 
-<style>
-/* ── PRESENTATION MODE ── */
-body.present-mode {
-  overflow: hidden;
-}
-body.present-mode .divider { display: none; }
-body.present-mode footer { display: none; }
-
-body.present-mode section,
-body.present-mode #hero,
-body.present-mode #ending {
-  position: fixed !important;
-  inset: 0;
-  width: 100vw;
-  max-width: 100vw;
-  min-height: 100vh;
-  height: 100vh;
-  padding: 88px 80px 88px !important;
-  margin: 0 !important;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  /* slide states */
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(40px);
-  transition: opacity 0.55s cubic-bezier(.4,0,.2,1),
-              transform 0.55s cubic-bezier(.4,0,.2,1);
-  z-index: 2;
-}
-body.present-mode section.slide-active,
-body.present-mode #hero.slide-active,
-body.present-mode #ending.slide-active {
-  opacity: 1;
-  pointer-events: all;
-  transform: translateY(0);
-  z-index: 3;
-}
-body.present-mode section.slide-exit,
-body.present-mode #hero.slide-exit,
-body.present-mode #ending.slide-exit {
-  opacity: 0;
-  transform: translateY(-40px);
-  pointer-events: none;
-  z-index: 2;
-}
-/* reveal all children instantly in present mode */
-body.present-mode .reveal { opacity: 1 !important; transform: none !important; }
-
-/* ── PRESENTATION CONTROLS ── */
-#pres-controls {
-  display: none;
-  position: fixed;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 200;
-  background: rgba(5,5,8,0.92);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 999px;
-  padding: 12px 24px;
-  gap: 24px;
-  align-items: center;
-}
-body.present-mode #pres-controls { display: flex; }
-
-.pres-btn {
-  background: none;
-  border: none;
-  color: #A0A0B0;
-  cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 20px;
-  line-height: 1;
-  transition: color 0.2s, background 0.2s;
-  display: flex; align-items: center;
-}
-.pres-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
-.pres-btn:disabled { opacity: 0.25; cursor: not-allowed; }
-
-#pres-counter {
-  font-size: 15px;
-  font-weight: 700;
-  color: #A0A0B0;
-  letter-spacing: 0.08em;
-  min-width: 60px;
-  text-align: center;
-}
-
-#pres-dots {
-  display: flex; gap: 8px; align-items: center;
-}
-.pres-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.2);
-  cursor: pointer;
-  transition: background 0.2s, width 0.2s;
-}
-.pres-dot.active {
-  background: #3355FF;
-  width: 20px;
-  border-radius: 3px;
-}
-
-/* ── TOGGLE BUTTON (always visible) ── */
-#pres-toggle {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  z-index: 300;
-  background: #3355FF;
-  color: #fff;
-  border: none;
-  border-radius: 999px;
-  padding: 12px 22px;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 4px 24px rgba(51,85,255,0.4);
-  transition: background 0.2s, transform 0.15s;
-}
-#pres-toggle:hover { background: #4D6BFF; transform: translateY(-1px); }
-
-/* click-anywhere overlay (present mode) */
-#click-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 150;
-  cursor: pointer;
-}
-body.present-mode #click-overlay { display: block; }
-body.present-mode #pres-controls,
-body.present-mode #pres-toggle { z-index: 250; pointer-events: all; }
-</style>
-
 <!-- Click overlay (advance on click anywhere) -->
-<div id="click-overlay" onclick="presNext()"></div>
+<div id="click-overlay" onclick="presNext()" aria-hidden="true"></div>
 
 <!-- Presentation controls bar -->
-<div id="pres-controls">
-  <button class="pres-btn" id="pres-prev" onclick="presGo(currentSlide-1)" title="Anterior (←)">&#8592;</button>
+<div id="pres-controls" role="group" aria-label="Controles de apresentação">
+  <button class="pres-btn" id="pres-prev" onclick="presGo(currentSlide-1)" title="Anterior (←)" aria-label="Slide anterior">&#8592;</button>
   <div id="pres-dots"></div>
   <span id="pres-counter">1 / 8</span>
-  <button class="pres-btn" id="pres-next" onclick="presNext()" title="Próximo (→ / Espaço / Clique)">&#8594;</button>
-  <button class="pres-btn" onclick="exitPresMode()" title="Sair (Esc)" style="margin-left:8px;font-size:16px;border-left:1px solid rgba(255,255,255,0.1);padding-left:20px;">✕</button>
+  <button class="pres-btn" id="pres-next" onclick="presNext()" title="Próximo (→ / Espaço / Clique)" aria-label="Próximo slide">&#8594;</button>
+  <button class="pres-btn" onclick="exitPresMode()" title="Sair (Esc)" aria-label="Sair da apresentação" style="margin-left:8px;font-size:16px;border-left:1px solid rgba(255,255,255,0.1);padding-left:20px;">✕</button>
 </div>
 
 <!-- Toggle button -->
 <button id="pres-toggle" onclick="togglePresMode()">
-  <svg width="15" height="15" viewBox="0 0 14 14" fill="none" id="pres-icon">
+  <svg width="15" height="15" viewBox="0 0 14 14" fill="none" id="pres-icon" aria-hidden="true">
     <rect x="1" y="1" width="12" height="9" rx="1.5" stroke="white" stroke-width="1.5" fill="none"/>
     <path d="M5 13h4M7 10v3" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
   </svg>
@@ -1463,12 +1532,35 @@ let transitioning = false;
 const badge = document.getElementById('page-badge');
 const dotsContainer = document.getElementById('pres-dots');
 const counter = document.getElementById('pres-counter');
+const navEl = document.querySelector('nav');
+const navToggle = document.getElementById('nav-toggle');
+const navLinks = document.querySelectorAll('#nav-links a');
+
+function updateActiveNav(i) {
+  navLinks.forEach((a, idx) => a.classList.toggle('active', idx === i));
+}
+
+// Mobile hamburger menu
+navToggle.addEventListener('click', () => {
+  const open = navEl.classList.toggle('nav-open');
+  navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+});
+navLinks.forEach(a => a.addEventListener('click', () => {
+  navEl.classList.remove('nav-open');
+  navToggle.setAttribute('aria-expanded', 'false');
+}));
 
 // Build dots
 SLIDE_IDS.forEach((_, i) => {
   const d = document.createElement('div');
   d.className = 'pres-dot' + (i === 0 ? ' active' : '');
+  d.setAttribute('role', 'button');
+  d.setAttribute('tabindex', '0');
+  d.setAttribute('aria-label', `Ir para ${SLIDE_LABELS[i]}`);
   d.onclick = (e) => { e.stopPropagation(); presGo(i); };
+  d.onkeydown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); presGo(i); }
+  };
   dotsContainer.appendChild(d);
 });
 
@@ -1482,6 +1574,7 @@ function updateDots(i) {
   });
   counter.textContent = `${i+1} / ${SLIDE_IDS.length}`;
   badge.textContent = SLIDE_LABELS[i];
+  updateActiveNav(i);
   document.getElementById('pres-prev').disabled = i === 0;
   document.getElementById('pres-next').disabled = i === SLIDE_IDS.length - 1;
 }
@@ -1553,24 +1646,23 @@ function togglePresMode() {
   presentMode ? exitPresMode() : enterPresMode();
 }
 
-// Keyboard navigation
+// Keyboard navigation (only while presenting — F5/Ctrl+P keep their normal browser behavior)
 document.addEventListener('keydown', (e) => {
-  if (!presentMode) {
-    if (e.key === 'F5' || (e.key === 'p' && e.ctrlKey)) { e.preventDefault(); enterPresMode(); }
-    return;
-  }
+  if (!presentMode) return;
   if (e.key === 'Escape') { exitPresMode(); return; }
   if (['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key)) { e.preventDefault(); presNext(); }
   if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); presPrev(); }
 });
 
-// Scroll mode: page badge update
+// Scroll mode: page badge + nav active state update
 const sections = SLIDE_IDS.map((id, i) => ({ el: document.getElementById(id), label: SLIDE_LABELS[i] }));
 window.addEventListener('scroll', () => {
   if (presentMode) return;
   let current = sections[0];
-  sections.forEach(s => { if (window.scrollY >= s.el.offsetTop - 200) current = s; });
+  let idx = 0;
+  sections.forEach((s, i) => { if (window.scrollY >= s.el.offsetTop - 200) { current = s; idx = i; } });
   badge.textContent = current.label;
+  updateActiveNav(idx);
 }, { passive: true });
 
 // Scroll reveal (non-present mode)
