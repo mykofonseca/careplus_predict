@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blua — Sua saúde, compreendida.</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #050508;
+    --blue: #3355FF;
+    --blue-bright: #4D6BFF;
+    --blue-dim: #1a2a80;
+    --blue-glow: rgba(51, 85, 255, 0.18);
+    --white: #FFFFFF;
+    --gray-1: #F0F0F0;
+    --gray-2: #A0A0B0;
+    --gray-3: #404058;
+    --gray-4: #18181f;
+    --page-max: 1920px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 56px;
+    background: rgba(5,5,8,0.88);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .nav-brand {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .nav-brand span { color: var(--gray-2); font-weight: 400; display: block; font-size: 13px; letter-spacing: 0.04em; }
+  .nav-links { display: flex; gap: 40px; align-items: center; }
+  .nav-links a {
+    color: var(--gray-2);
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a.active { color: var(--white); font-weight: 700; }
+  .page-badge {
+    background: var(--blue);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 9px 22px;
+    border-radius: 999px;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 56px 90px;
+    max-width: var(--page-max);
+    margin: 0 auto;
+    position: relative;
+  }
+  section.full { max-width: none; padding-left: 0; padding-right: 0; }
+
+  /* ── CHEVRONS (decorative) ── */
+  .chevron-deco {
+    position: absolute;
+    opacity: 0.18;
+    pointer-events: none;
+  }
+  .chevron-svg { width: 220px; height: auto; }
+
+  /* ── EYEBROW ── */
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gray-2);
+    margin-bottom: 22px;
+  }
+
+  /* ── DISPLAY HEADINGS ── */
+  .display-xl {
+    font-size: clamp(86px, 9.5vw, 150px);
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+  }
+  .display-xl .light { font-weight: 300; }
+  .display-xl .blue { color: var(--blue-bright); }
+
+  .display-lg {
+    font-size: clamp(40px, 5.5vw, 76px);
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+  }
+  .display-lg .thin { font-weight: 300; }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue-bright);
+    margin-bottom: 36px;
+  }
+
+  .body-lg {
+    font-size: clamp(17px, 1.6vw, 22px);
+    color: var(--gray-2);
+    line-height: 1.8;
+    max-width: 640px;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: rgba(255,255,255,0.07);
+    margin: 0;
+  }
+
+  /* ── PAGE 01 — HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 0 56px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-inner {
+    width: 100%;
+    max-width: var(--page-max);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(51,85,255,0.15);
+    border: 1px solid rgba(51,85,255,0.35);
+    border-radius: 999px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--blue-bright);
+    letter-spacing: 0.06em;
+    width: fit-content;
+  }
+  .hero-badge::before {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--blue-bright);
+  }
+  .hero-cta-row { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+  .btn-primary {
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: var(--blue-bright); transform: translateY(-1px); }
+  .btn-ghost {
+    color: var(--gray-2);
+    border: 1px solid var(--gray-3);
+    border-radius: 6px;
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--white); color: var(--white); }
+
+  /* BG glow */
+  .hero-glow {
+    position: absolute;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(51,85,255,0.22) 0%, transparent 70%);
+    top: 50%; left: 60%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero-inner { position: relative; z-index: 1; }
+
+  /* ── PAGE 02 — DORES ── */
+  #dores { border-top: 1px solid rgba(255,255,255,0.07); }
+  .dores-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-top: 68px;
+  }
+  .dores-header {
+    grid-column: 1 / -1;
+    margin-bottom: 60px;
+  }
+  .dor-item {
+    padding: 44px 0;
+    border-top: 1px solid rgba(255,255,255,0.09);
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+  .dor-item:nth-child(even) { padding-left: 60px; border-left: 1px solid rgba(255,255,255,0.09); }
+  .dor-num {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--blue-bright);
+    letter-spacing: 0.06em;
+    padding-top: 4px;
+  }
+  .dor-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .dor-body { font-size: 17px; color: var(--gray-2); line-height: 1.75; }
+
+  /* ── PAGE 03 — PROCESSO ── */
+  #processo { border-top: 1px solid rgba(255,255,255,0.07); }
+  .processo-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    margin-top: 68px;
+  }
+  .processo-steps { display: flex; flex-direction: column; gap: 0; }
+  .pstep {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 40px 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+  }
+  .pstep:last-child { border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .pstep-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue-bright);
+  }
+  .pstep-title {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .pstep-body { font-size: 16px; color: var(--gray-2); line-height: 1.75; }
+  .arrow-down {
+    width: 22px; height: 28px;
+    margin: 4px 0 -8px 0;
+    opacity: 0.4;
+  }
+
+  /* login card mock */
+  .login-card {
+    background: #0e0e14;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 40px 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+  }
+  .app-icon {
+    width: 60px; height: 60px;
+    background: var(--blue);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; color: #fff; text-align: center;
+    line-height: 1.2;
+  }
+  .card-welcome { font-size: 15px; color: var(--blue-bright); font-weight: 600; }
+  .tab-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px; overflow: hidden;
+    width: 100%;
+  }
+  .tab-btn {
+    padding: 12px;
+    font-size: 15px; font-weight: 600;
+    text-align: center; cursor: pointer;
+    color: var(--gray-2);
+    transition: background 0.2s;
+  }
+  .tab-btn.active { background: var(--blue); color: #fff; }
+  .card-input {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 14px 16px;
+    color: var(--gray-2);
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+  }
+  .card-btn {
+    width: 100%;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .card-forgot { font-size: 14px; color: var(--gray-2); cursor: pointer; }
+
+  /* ── PAGE 04 — PROJETO ── */
+  #projeto { border-top: 1px solid rgba(255,255,255,0.07); }
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-top: 68px;
+  }
+  .feat-cell {
+    background: var(--black);
+    padding: 44px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: background 0.2s;
+  }
+  .feat-cell:hover { background: #0a0a12; }
+  .feat-icon {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    background: var(--blue-glow);
+    border: 1px solid rgba(51,85,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .feat-title { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+  .feat-body { font-size: 16px; color: var(--gray-2); line-height: 1.75; }
+
+  /* ── PAGE 05 — PAINEL ── */
+  #painel { border-top: 1px solid rgba(255,255,255,0.07); }
+  .painel-screens {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 68px;
+  }
+  .screen-card {
+    background: #0a0a12;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .screen-bar {
+    background: rgba(255,255,255,0.04);
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gray-2);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .screen-body { padding: 26px 20px; }
+
+  /* mock dashboard */
+  .dash-row { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+  .dash-stat {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    padding: 14px 16px;
+    min-width: 80px;
+  }
+  .dash-stat-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-2); margin-bottom: 6px; }
+  .dash-stat-val { font-size: 26px; font-weight: 800; }
+  .dash-list { display: flex; flex-direction: column; gap: 7px; }
+  .dash-patient-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.03);
+    font-size: 14px;
+  }
+  .patient-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--blue-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+  .patient-name { flex: 1; font-weight: 500; font-size: 14px; }
+  .status-pill {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+    padding: 4px 10px; border-radius: 999px; text-transform: uppercase;
+  }
+  .status-ok { background: rgba(22,163,74,0.2); color: #4ade80; }
+  .status-warn { background: rgba(234,179,8,0.2); color: #facc15; }
+  .status-risk { background: rgba(239,68,68,0.2); color: #f87171; }
+
+  /* mock bar chart */
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 80px; margin-top: 12px; }
+  .bar {
+    flex: 1;
+    border-radius: 4px 4px 0 0;
+    position: relative;
+  }
+  .bar-label { font-size: 11px; color: var(--gray-2); text-align: center; margin-top: 4px; }
+
+  /* prescriptions mock */
+  .rx-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+  }
+  .rx-label { font-size: 11px; font-weight: 700; color: var(--gray-2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+  .rx-id { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+  .rx-tag {
+    font-size: 11px; font-weight: 700;
+    padding: 3px 10px; border-radius: 999px;
+    background: rgba(234,179,8,0.2); color: #facc15;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    float: right; margin-top: -20px;
+  }
+  .rx-type { font-size: 15px; font-weight: 600; margin-bottom: 14px; }
+  .rx-actions { display: flex; gap: 8px; }
+  .rx-approve {
+    flex: 1; background: #16a34a; color: #fff;
+    border: none; border-radius: 6px; padding: 10px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .rx-reject {
+    flex: 1; background: rgba(255,255,255,0.05); color: var(--gray-2);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 10px; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+
+  /* ── PAGE 06 — IA ── */
+  #ia { border-top: 1px solid rgba(255,255,255,0.07); }
+  .ia-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    margin-top: 68px;
+    align-items: start;
+  }
+  .ia-info { display: flex; flex-direction: column; gap: 44px; }
+  .ia-type { display: flex; flex-direction: column; gap: 12px; }
+  .ia-type-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--blue-bright);
+  }
+  .ia-type-title { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; }
+  .ia-type-body { font-size: 16px; color: var(--gray-2); line-height: 1.75; }
+  .ia-divider { height: 1px; background: rgba(255,255,255,0.07); }
+
+  /* tech spec tag */
+  .tech-tag {
+    display: inline-block;
+    background: rgba(51,85,255,0.12);
+    border: 1px solid rgba(51,85,255,0.25);
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--blue-bright);
+    letter-spacing: 0.04em;
+    margin-right: 6px;
+    margin-top: 6px;
+  }
+
+  /* Chat UI mock */
+  .chat-ui {
+    background: #0a0a12;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .chat-header {
+    background: rgba(255,255,255,0.04);
+    padding: 16px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .chat-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; }
+  .chat-messages { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .msg { max-width: 82%; padding: 12px 16px; border-radius: 12px; font-size: 15px; line-height: 1.6; }
+  .msg-user { background: var(--blue); color: #fff; align-self: flex-end; border-radius: 12px 12px 2px 12px; }
+  .msg-ai { background: rgba(255,255,255,0.06); color: var(--gray-1); align-self: flex-start; border-radius: 12px 12px 12px 2px; }
+  .chat-input-row {
+    display: flex; gap: 10px; padding: 16px 20px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+  }
+  .chat-input {
+    flex: 1; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px; padding: 12px 16px;
+    color: var(--gray-2); font-size: 15px; font-family: inherit; outline: none;
+  }
+  .chat-send {
+    width: 44px; height: 44px;
+    background: var(--blue); border-radius: 8px;
+    border: none; border-radius: 8px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ── PAGE 07 — ROADMAP ── */
+  #roadmap { border-top: 1px solid rgba(255,255,255,0.07); }
+  .roadmap-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    margin-top: 68px;
+  }
+  .phases { display: flex; flex-direction: column; gap: 0; }
+  .phase {
+    padding: 36px 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .phase:last-child { border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .phase-header { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+  .phase-num {
+    width: 32px; height: 32px;
+    background: var(--blue);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; flex-shrink: 0;
+  }
+  .phase-num.done { background: #16a34a; }
+  .phase-num.progress { background: var(--blue); }
+  .phase-num.future { background: var(--gray-3); }
+  .phase-title { font-size: 19px; font-weight: 800; }
+  .phase-status {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 999px; margin-left: auto;
+  }
+  .phase-status.done { background: rgba(22,163,74,0.15); color: #4ade80; }
+  .phase-status.progress { background: rgba(51,85,255,0.2); color: var(--blue-bright); }
+  .phase-status.future { background: rgba(255,255,255,0.07); color: var(--gray-2); }
+  .phase-items { display: flex; flex-direction: column; gap: 9px; padding-left: 48px; }
+  .phase-item { font-size: 15px; color: var(--gray-2); display: flex; align-items: flex-start; gap: 10px; }
+  .phase-item::before { content: '—'; color: var(--blue-bright); flex-shrink: 0; margin-top: 1px; }
+
+  /* mobile app mock */
+  .phone-mock {
+    background: #0a0a12;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    overflow: hidden;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  .phone-topbar {
+    background: rgba(255,255,255,0.03);
+    padding: 14px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    text-align: center;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gray-2);
+  }
+  .phone-body { padding: 26px 22px; }
+  .phone-logo {
+    width: 56px; height: 56px;
+    background: var(--blue);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; color: #fff; text-align: center; line-height: 1.2;
+    margin: 0 auto 16px;
+  }
+  .phone-welcome { font-size: 14px; color: var(--blue-bright); font-weight: 600; text-align: center; margin-bottom: 20px; }
+  .phone-tabs {
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden; margin-bottom: 14px;
+  }
+  .phone-tab {
+    padding: 10px; font-size: 13px; font-weight: 600; text-align: center; color: var(--gray-2);
+  }
+  .phone-tab.active { background: var(--blue); color: #fff; }
+  .phone-field {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 7px;
+    padding: 12px 14px;
+    color: var(--gray-2); font-size: 13px;
+    margin-bottom: 10px;
+  }
+  .phone-submit {
+    width: 100%; background: var(--blue); color: #fff;
+    border: none; border-radius: 8px; padding: 13px;
+    font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 10px;
+  }
+  .phone-forgot { font-size: 12px; color: var(--gray-2); text-align: center; }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: flex;
+    gap: 0;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-top: 52px;
+  }
+  .stat-item {
+    flex: 1;
+    padding: 32px 28px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-val {
+    font-size: clamp(28px, 3vw, 44px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: var(--white);
+  }
+  .stat-val .blue { color: var(--blue-bright); }
+  .stat-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-2);
+    line-height: 1.4;
+  }
+
+  /* ── PAGE 08 — ENCERRAMENTO ── */
+  #ending {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 56px 90px;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(255,255,255,0.07);
+  }
+  .ending-glow {
+    position: absolute;
+    width: 800px; height: 800px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(51,85,255,0.2) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .ending-content { position: relative; z-index: 1; max-width: 760px; }
+  .ending-question {
+    font-size: 22px; color: var(--blue-bright); font-weight: 600; margin-bottom: 28px;
+    letter-spacing: 0.01em;
+  }
+  .ending-obrigado {
+    font-size: clamp(68px, 12vw, 148px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    margin-bottom: 44px;
+  }
+  .ending-project {
+    font-size: 22px; font-weight: 700; margin-bottom: 32px; color: var(--gray-1);
+  }
+  .ending-team {
+    display: flex; flex-direction: column; gap: 10px;
+    margin-bottom: 52px;
+  }
+  .ending-member { font-size: 18px; color: var(--gray-2); }
+  .ending-meta {
+    padding: 22px 40px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 999px;
+    display: inline-flex; gap: 52px; align-items: center;
+    font-size: 16px; font-weight: 600; color: var(--gray-2);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 28px 56px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 14px; color: var(--gray-2);
+    max-width: var(--page-max); margin: 0 auto;
+    width: 100%;
+  }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a { color: var(--gray-2); text-decoration: none; }
+  .footer-links a:hover { color: var(--white); }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+    section { padding: 100px 22px 64px; }
+    #hero { padding: 0 22px; }
+    .dores-grid { grid-template-columns: 1fr; }
+    .dor-item:nth-child(even) { padding-left: 0; border-left: none; }
+    .processo-layout, .ia-layout, .roadmap-layout { grid-template-columns: 1fr; gap: 40px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .painel-screens { grid-template-columns: 1fr; }
+    .stats-bar { flex-direction: column; }
+    .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+    .ending-meta { flex-direction: column; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    Apresentação
+    <span>SM: Allan Roberto · Predict V2</span>
+  </div>
+  <div class="nav-links">
+    <a href="#hero" class="active">Home</a>
+    <a href="#dores">Problema</a>
+    <a href="#processo">Solução</a>
+    <a href="#ia">IA</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="#ending">Encerramento</a>
+  </div>
+  <span class="page-badge" id="page-badge">Page 01</span>
+</nav>
+
+<!-- PAGE 01 — HERO -->
+<section id="hero" style="max-width:none;padding-left:0;padding-right:0;">
+  <div class="hero-glow"></div>
+  <svg class="chevron-deco" style="left:-60px;top:50%;transform:translateY(-50%)" width="220" height="300" viewBox="0 0 220 300" fill="none">
+    <path d="M20 20 L180 150 L20 280" stroke="#3355FF" stroke-width="40" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M80 20 L240 150 L80 280" stroke="#3355FF" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.4"/>
+  </svg>
+
+  <div class="hero-inner" style="padding:0 56px;max-width:1280px;margin:0 auto;">
+    <div class="reveal">
+      <span class="hero-badge">Blua · CarePlus · Bupa · FIAP 2026</span>
+    </div>
+    <div class="reveal" style="transition-delay:0.1s">
+      <h1 class="display-xl">
+        <span class="light">Sua saúde,</span><br>
+        <span class="blue">compreendida.</span>
+      </h1>
+    </div>
+    <div class="reveal" style="transition-delay:0.2s">
+      <p class="body-lg">O cuidado reativo <strong style="color:#fff">se torna preditivo.</strong><br>
+      Plataforma de telessaúde com <strong style="color:#fff">três IAs integradas</strong>: RAG clínico, prescrição com Human-in-the-Loop e chat empático com contexto real de wearable.</p>
+    </div>
+    <div class="hero-cta-row reveal" style="transition-delay:0.3s">
+      <a href="#processo" class="btn-primary">Ver o produto</a>
+      <a href="#ending" class="btn-ghost">Grupo NextGen · 1TDSPE</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PAGE 02 — DORES -->
+<section id="dores">
+  <div class="reveal">
+    <p class="section-title">Page 02 · Problema</p>
+    <h2 class="display-lg">
+      <span class="thin">O cuidado reativo</span><br>
+      se torna preditivo
+    </h2>
+  </div>
+  <div class="dores-grid">
+    <div class="dores-header reveal">
+      <p class="eyebrow">Três dores centrais do setor</p>
+    </div>
+    <div class="dor-item reveal">
+      <span class="dor-num">01.</span>
+      <div>
+        <p class="dor-title">Continuidade zero entre consultas</p>
+        <p class="dor-body">O beneficiário sai do consultório e some até a próxima visita. O médico decide com base em memória, intuição e meia hora de conversa — sem dado de wearable, sem histórico contínuo.</p>
+      </div>
+    </div>
+    <div class="dor-item reveal">
+      <span class="dor-num">02.</span>
+      <div>
+        <p class="dor-title">Custo invisível de internações</p>
+        <p class="dor-body">Hipertensão, diabetes e DPOC representam 40–60% do custo assistencial das operadoras. O plano só descobre o risco quando o beneficiário já está no pronto-socorro.</p>
+      </div>
+    </div>
+    <div class="dor-item reveal" style="grid-column:1/-1; max-width:620px;">
+      <span class="dor-num">03.</span>
+      <div>
+        <p class="dor-title">IA sem ancoragem clínica</p>
+        <p class="dor-body">Soluções de mercado usam LLMs generalistas que alucinam fontes. Falta RAG sobre protocolos curados, HITL para prescrição e compliance nativo com CFM e LGPD.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PAGE 03 — PROCESSO -->
+<section id="processo">
+  <div class="reveal">
+    <p class="section-title">Page 03 · Solução · Stack técnico</p>
+    <h2 class="display-lg">
+      <span class="thin">Dados do wearable</span><br>
+      → Decisão clínica fundamentada
+    </h2>
+  </div>
+  <div class="processo-layout">
+    <div class="processo-steps">
+      <div class="pstep reveal">
+        <span class="pstep-label">Etapa 01 · Coleta</span>
+        <p class="pstep-title">Samsung Health SDK + Galaxy Watch</p>
+        <p class="pstep-body">268 dias de dados reais capturados: FC média, SpO₂, passos e sono via Galaxy Watch 4. Pipeline: Samsung Health SDK 6.0 → Supabase (health_readings) → dashboard em tempo real. Origem marcada como <code style="color:var(--blue-bright);font-size:14px">is_simulated=false</code>.</p>
+      </div>
+      <svg class="arrow-down" viewBox="0 0 22 28" fill="none"><path d="M11 2v22M4 18l7 8 7-8" stroke="#3355FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="pstep reveal" style="transition-delay:0.1s">
+        <span class="pstep-label">Etapa 02 · Inteligência</span>
+        <p class="pstep-title">Blua (Python ML) + Groq LLM</p>
+        <p class="pstep-body">Serviço Blua centraliza embeddings via Sentence-Transformer <strong style="color:#fff">multilingual-e5-small</strong> (384 dim, PT/EN). LLM: Llama 3.1 70B via Groq — 50ms de latência, 250 tokens/s. Backend Fastify (Node.js) nunca chama o Groq diretamente: toda chamada LLM passa pelo Blua, garantindo portabilidade.</p>
+      </div>
+      <svg class="arrow-down" viewBox="0 0 22 28" fill="none"><path d="M11 2v22M4 18l7 8 7-8" stroke="#3355FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="pstep reveal" style="transition-delay:0.2s">
+        <span class="pstep-label">Etapa 03 · Decisão</span>
+        <p class="pstep-title">Score de risco + HITL obrigatório</p>
+        <p class="pstep-body">Score 0–100 consolidado (atividade, FC de repouso, sono). Prescrições geradas pela IA entram com <strong style="color:#fff">status pendente</strong> — nenhum caminho técnico permite aprovação automática. Trilha de auditoria nativa: 240 registros gravados em produção. Resolução CFM 2.314/2022 atendida por arquitetura.</p>
+      </div>
+    </div>
+    <div class="login-card reveal" style="transition-delay:0.15s">
+      <div class="app-icon">Care<br>Plus</div>
+      <p class="card-welcome">CarePlus Predict V2</p>
+      <div class="tab-row">
+        <div class="tab-btn">Paciente</div>
+        <div class="tab-btn active">Médico</div>
+      </div>
+      <input class="card-input" type="text" value="medico@careplus.com" readonly>
+      <input class="card-input" type="password" value="········" readonly>
+      <button class="card-btn">Entrar como Médico</button>
+      <span class="card-forgot">Esqueceu sua senha?</span>
+      <div style="width:100%;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-wrap:wrap;gap:6px;">
+        <span class="tech-tag">Fastify · Node.js</span>
+        <span class="tech-tag">Python · Blua</span>
+        <span class="tech-tag">Supabase + pgvector</span>
+        <span class="tech-tag">AWS us-east-1</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PAGE 04 — PROJETO -->
+<section id="projeto">
+  <div class="reveal">
+    <p class="section-title">Page 04 · Projeto · Diferenciais técnicos</p>
+    <h2 class="display-lg">
+      <strong>CarePlus Predict V2</strong><br>
+      <span class="thin">End-to-end em produção</span>
+    </h2>
+  </div>
+  <div class="features-grid">
+    <div class="feat-cell reveal">
+      <span class="feat-icon">🗄️</span>
+      <p class="feat-title">Dados unificados em tempo real</p>
+      <p class="feat-body">Samsung Health SDK 6.0+ e Galaxy Watch 4. Schema único no Postgres 15 (Supabase) com transações ACID entre dados clínicos e índices vetoriais pgvector. 268 dias de dados reais do primeiro paciente real da plataforma — <strong style="color:#fff">Maykon Fonseca</strong>.</p>
+    </div>
+    <div class="feat-cell reveal" style="transition-delay:0.1s">
+      <span class="feat-icon">🧠</span>
+      <p class="feat-title">RAG clínico com fontes verificáveis</p>
+      <p class="feat-body">164 chunks vetoriais indexados de 3 protocolos curados: Diretriz HAS 2024 SBC (142 trechos), Protocolo Diabetes Tipo 2 (88 trechos), Manual de triagem cardiovascular (61 trechos). Busca por cosseno via operador <code style="color:var(--blue-bright);">&lt;=&gt;</code> pgvector. Nenhuma alucinação de fonte.</p>
+    </div>
+    <div class="feat-cell reveal" style="transition-delay:0.05s">
+      <span class="feat-icon">💊</span>
+      <p class="feat-title">HITL · Prescrição com supervisão</p>
+      <p class="feat-body">Paciente pseudonimizado (ex: <strong style="color:#fff">PT-9F2A-31</strong>) — o médico revisor vê apenas o código BNF, jamais o nome. Viés de conhecimento prévio eliminado por design. API: <code style="color:var(--blue-bright);">POST /ai/prescriptions/:id/review</code>. Toda decisão grava em auditoria CFM.</p>
+    </div>
+    <div class="feat-cell reveal" style="transition-delay:0.15s">
+      <span class="feat-icon">🔒</span>
+      <p class="feat-title">LGPD e CFM por design</p>
+      <p class="feat-body">Pseudonimização nativa no banco. Consentimento granular via tela dedicada. Chat classifica intent (<code style="color:var(--blue-bright);">duvida_geral</code>, <code style="color:var(--blue-bright);">queixa_sintoma</code>, <code style="color:var(--blue-bright);">pedido_prescricao</code>) e detecta red flags. 116 mensagens trocadas em 25 threads em produção. AES-256, TLS 1.3.</p>
+    </div>
+  </div>
+
+  <!-- Stats bar com dados reais do relatório -->
+  <div class="stats-bar reveal" style="transition-delay:0.2s">
+    <div class="stat-item">
+      <span class="stat-val"><span class="blue">164</span></span>
+      <span class="stat-label">chunks vetoriais indexados<br>em pgvector (produção)</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-val"><span class="blue">268</span></span>
+      <span class="stat-label">dias de dados reais<br>Samsung Health</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-val"><span class="blue">116</span></span>
+      <span class="stat-label">mensagens em 25 threads<br>no chat do paciente</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-val"><span class="blue">240</span></span>
+      <span class="stat-label">registros de auditoria<br>CFM em produção</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-val">~<span class="blue">$30</span></span>
+      <span class="stat-label">custo Groq/mês<br>para 1.000 pacientes</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PAGE 05 — PAINEL -->
+<section id="painel">
+  <div class="reveal">
+    <p class="section-title">Page 05 · Painel Web Médico · Dashboard React</p>
+    <h2 class="display-lg">
+      <strong>Visão executiva</strong><br>
+      <span class="thin">da carteira em 5 segundos</span>
+    </h2>
+  </div>
+  <div class="painel-screens">
+    <!-- Dashboard overview -->
+    <div class="screen-card reveal">
+      <div class="screen-bar">Vista geral — Dra. Helena Costa · Médica</div>
+      <div class="screen-body">
+        <div class="dash-row">
+          <div class="dash-stat"><div class="dash-stat-label">Pacientes</div><div class="dash-stat-val">5</div></div>
+          <div class="dash-stat"><div class="dash-stat-label">Acomp.</div><div class="dash-stat-val">3</div></div>
+          <div class="dash-stat"><div class="dash-stat-label">Passos méd.</div><div class="dash-stat-val">7.082</div></div>
+          <div class="dash-stat"><div class="dash-stat-label">Consultas</div><div class="dash-stat-val">36</div></div>
+        </div>
+        <p style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-2);margin-bottom:12px;">Pacientes recentes</p>
+        <div class="dash-list">
+          <div class="dash-patient-row"><div class="patient-avatar">MA</div><span class="patient-name">Marina Alves · 54 anos</span><span class="status-pill status-warn">Risco médio</span></div>
+          <div class="dash-patient-row"><div class="patient-avatar">JB</div><span class="patient-name">João Bertoldo · 61 anos</span><span class="status-pill status-ok">Saudável</span></div>
+          <div class="dash-patient-row"><div class="patient-avatar">CF</div><span class="patient-name">Cláudia Ferraz · 48 anos</span><span class="status-pill status-risk">Alto risco</span></div>
+          <div class="dash-patient-row"><div class="patient-avatar">RN</div><span class="patient-name">Rafael Nunes · 39 anos</span><span class="status-pill status-ok">Saudável</span></div>
+          <div class="dash-patient-row"><div class="patient-avatar">MF</div><span class="patient-name">Maykon Fonseca <span style="color:var(--blue-bright);font-size:11px;">● REAL · Galaxy Watch</span></span><span class="status-pill status-ok">Saudável</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- Metrics agregadas -->
+    <div class="screen-card reveal" style="transition-delay:0.1s">
+      <div class="screen-bar">Métricas agregadas · Score médio da carteira</div>
+      <div class="screen-body">
+        <div class="dash-row">
+          <div class="dash-stat"><div class="dash-stat-label">Score médio</div><div class="dash-stat-val" style="color:var(--blue-bright)">73</div></div>
+          <div class="dash-stat"><div class="dash-stat-label">Risco alto</div><div class="dash-stat-val" style="color:#f87171">15%</div></div>
+          <div class="dash-stat"><div class="dash-stat-label">Alertas</div><div class="dash-stat-val" style="color:#facc15">8</div></div>
+          <div class="dash-stat"><div class="dash-stat-label">Latência</div><div class="dash-stat-val">50ms</div></div>
+        </div>
+        <p style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-2);margin:14px 0 8px;">Passos médios · últimos 30 dias</p>
+        <div class="bar-chart">
+          <div style="display:flex;flex-direction:column;align-items:center;flex:1"><div class="bar" style="height:65%;background:#16a34a"></div><div class="bar-label">Marina</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;flex:1"><div class="bar" style="height:40%;background:#ca8a04"></div><div class="bar-label">João</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;flex:1"><div class="bar" style="height:25%;background:#dc2626"></div><div class="bar-label">Cláudia</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;flex:1"><div class="bar" style="height:80%;background:#16a34a"></div><div class="bar-label">Rafael</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;flex:1"><div class="bar" style="height:72%;background:var(--blue)"></div><div class="bar-label">Maykon</div></div>
+        </div>
+        <p style="font-size:12px;color:var(--gray-2);margin-top:10px;font-style:italic;">Distribuição de risco: 60% baixo · 25% médio · 15% alto — computado no Postgres sem ETL separado.</p>
+      </div>
+    </div>
+    <!-- Prescriptions HITL -->
+    <div class="screen-card reveal" style="transition-delay:0.05s">
+      <div class="screen-bar">Fila HITL · prescrições aguardando revisão médica</div>
+      <div class="screen-body">
+        <div class="rx-card">
+          <span class="rx-tag">pendente</span>
+          <div class="rx-label">Paciente (pseudonimizado · BNF)</div>
+          <div class="rx-id">PT-9F2A-31</div>
+          <div class="rx-type">Losartana 50mg · 1x/dia · 30 dias · controle pressórico</div>
+          <div class="rx-actions">
+            <button class="rx-approve">✓ Aprovar</button>
+            <button class="rx-reject">✕ Rejeitar</button>
+          </div>
+        </div>
+        <div class="rx-card" style="opacity:0.6">
+          <span class="rx-tag">pendente</span>
+          <div class="rx-label">Paciente (pseudonimizado · BNF)</div>
+          <div class="rx-id">PT-7C04-88</div>
+          <div class="rx-type">Metformina 850mg · 2x/dia após refeições · 60 dias</div>
+          <div class="rx-actions">
+            <button class="rx-approve">✓ Aprovar</button>
+            <button class="rx-reject">✕ Rejeitar</button>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--gray-2);margin-top:10px;">Revisor vê apenas código BNF — nome real nunca exposto. Trilha de auditoria gravada a cada decisão (CFM 2.314/2022).</p>
+      </div>
+    </div>
+    <!-- Chat paciente -->
+    <div class="screen-card reveal" style="transition-delay:0.15s">
+      <div class="screen-bar">Acesso restrito · painel médico · tema futurista</div>
+      <div class="screen-body" style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:28px 24px;">
+        <div class="app-icon" style="width:52px;height:52px;font-size:11px;">Care<br>Plus</div>
+        <p style="font-weight:700;font-size:16px;">Bem-vindo de volta</p>
+        <p style="font-size:14px;color:var(--gray-2);margin-top:-8px;">3 temas disponíveis: Claro · Escuro · Futurista</p>
+        <input class="card-input" type="text" value="medico@careplus.com" readonly style="width:100%">
+        <input class="card-input" type="password" value="········" readonly style="width:100%">
+        <button class="card-btn" style="width:100%">Entrar</button>
+        <p style="font-size:13px;color:var(--gray-2);text-align:center;">React Native 0.73 (mobile) · React (dashboard web)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PAGE 06 — IA -->
+<section id="ia">
+  <div class="reveal">
+    <p class="section-title">Page 06 · Três IAs integradas · Arquitetura LLM</p>
+    <h2 class="display-lg">
+      Inteligência artificial<br>
+      <strong>com ancoragem clínica</strong>
+    </h2>
+  </div>
+  <div class="ia-layout">
+    <div class="ia-info">
+      <div class="ia-type reveal">
+        <span class="ia-type-label">IA 01 · RAG para o Médico</span>
+        <p class="ia-type-title">Base clínica curada, nunca alucinação</p>
+        <p class="ia-type-body">PDFs divididos em chunks de 500–800 chars, vetorizados pelo Blua e persistidos em <code style="color:var(--blue-bright)">rag_chunks</code>. Busca por cosseno via <code style="color:var(--blue-bright)">match_rag_chunks</code> no pgvector. Prompt: <em style="color:var(--gray-1)">"Use estes trechos: Fonte 1, Fonte 2… Pergunta:…"</em> — resposta sempre com referência verificável.</p>
+        <div style="margin-top:8px">
+          <span class="tech-tag">multilingual-e5-small</span>
+          <span class="tech-tag">384 dim</span>
+          <span class="tech-tag">cosine pgvector</span>
+          <span class="tech-tag">164 chunks</span>
+        </div>
+      </div>
+      <div class="ia-divider"></div>
+      <div class="ia-type reveal" style="transition-delay:0.1s">
+        <span class="ia-type-label">IA 02 · Prescrição HITL</span>
+        <p class="ia-type-title">Nenhuma prescrição automática — jamais</p>
+        <p class="ia-type-body">Sugestões entram em <code style="color:var(--blue-bright)">prescriptions</code> com <code style="color:var(--blue-bright)">status='pendente'</code>. Médico revisa via dashboard com paciente pseudonimizado (BNF). Toda decisão (aprovar/rejeitar) grava em tabela <code style="color:var(--blue-bright)">auditoria</code> com ator_id, ação e timestamp — trilha exigida pelo CFM 2.314/2022.</p>
+        <div style="margin-top:8px">
+          <span class="tech-tag">HITL obrigatório</span>
+          <span class="tech-tag">BNF pseudonimizado</span>
+          <span class="tech-tag">240 registros auditoria</span>
+        </div>
+      </div>
+      <div class="ia-divider"></div>
+      <div class="ia-type reveal" style="transition-delay:0.2s">
+        <span class="ia-type-label">IA 03 · Chat Clínico do Paciente</span>
+        <p class="ia-type-title">Contexto em 3 camadas + guardrails</p>
+        <p class="ia-type-body">Prompt montado em camadas: <strong style="color:#fff">sistema</strong> (instruções restritivas) + <strong style="color:#fff">contexto</strong> (anamnese JSONB + últimas 7 leituras do wearable + nome) + <strong style="color:#fff">histórico</strong> (últimas msgs da thread). Resposta classificada quanto a intent e red flags. Tom conservador com disclaimer clínico automático. 116 mensagens em 25 threads em produção.</p>
+        <div style="margin-top:8px">
+          <span class="tech-tag">intent recognition</span>
+          <span class="tech-tag">red flags keyword</span>
+          <span class="tech-tag">Groq 50ms</span>
+          <span class="tech-tag">Llama 3.1 70B</span>
+        </div>
+      </div>
+    </div>
+    <!-- Chat mock -->
+    <div class="chat-ui reveal" style="transition-delay:0.15s">
+      <div class="chat-header">
+        <span class="chat-dot"></span>
+        Chat IA · Maria, 32a · hipertensa controlada · 22h00
+      </div>
+      <div class="chat-messages">
+        <div class="msg msg-user">Estou com dor de cabeça leve há 2 horas. O que faço?</div>
+        <div class="msg msg-ai">Entendo. Antes de qualquer orientação: sua FC média hoje foi 78 bpm e você dormiu 7,5h ontem — padrão estável. Algumas perguntas: a dor é latejante ou em pressão? Você tomou água nas últimas 2 horas?</div>
+        <div class="msg msg-user">É em pressão, e tomei pouca água</div>
+        <div class="msg msg-ai">Sem red flags detectados neste contexto. Recomendo: hidratação agora (400–500ml água), descanso em local com pouca luz. Se a dor persistir acima de 48h, piorar muito ou surgir visão turva, procure atendimento presencial imediatamente. Sua médica Dra. Helena revisará esta conversa amanhã. <em style="color:var(--gray-2);font-size:13px;">⚠ Não substitui consulta médica.</em></div>
+      </div>
+      <div class="chat-input-row">
+        <input class="chat-input" placeholder="Digite sua mensagem…" readonly>
+        <button class="chat-send">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8h12M10 4l6 4-6 4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div style="padding:14px 20px;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-wrap:wrap;gap:6px;">
+        <span class="tech-tag">intent: duvida_geral</span>
+        <span class="tech-tag">red_flags: nenhum</span>
+        <span class="tech-tag">thread_id: ai_messages</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PAGE 07 — ROADMAP -->
+<section id="roadmap">
+  <div class="reveal">
+    <p class="section-title">Page 07 · Roadmap · Estado atual e próximos marcos</p>
+    <h2 class="display-lg">
+      <span class="thin">Sistema implementado.</span><br>
+      <strong>Pronto para escalar!</strong>
+    </h2>
+  </div>
+  <div class="roadmap-layout">
+    <div class="phases">
+      <div class="phase reveal">
+        <div class="phase-header">
+          <span class="phase-num done">✓</span>
+          <p class="phase-title">Fase 1 — MVP em produção</p>
+          <span class="phase-status done">Concluída</span>
+        </div>
+        <div class="phase-items">
+          <div class="phase-item">App móvel React Native + dashboard web React funcionais</div>
+          <div class="phase-item">3 IAs integradas: RAG, HITL e Chat empático</div>
+          <div class="phase-item">164 chunks vetoriais indexados · 3 protocolos clínicos</div>
+          <div class="phase-item">268 dias de dados reais (Samsung Health · Galaxy Watch 4)</div>
+          <div class="phase-item">240 registros de auditoria · LGPD/CFM por design</div>
+        </div>
+      </div>
+      <div class="phase reveal" style="transition-delay:0.1s">
+        <div class="phase-header">
+          <span class="phase-num progress">2</span>
+          <p class="phase-title">Fase 2 — Piloto controlado · 30 dias</p>
+          <span class="phase-status progress">Próximo marco</span>
+        </div>
+        <div class="phase-items">
+          <div class="phase-item">50–200 pacientes voluntários em clínica parceira</div>
+          <div class="phase-item">5–15 médicos · refinamento do gatilho de prescrição</div>
+          <div class="phase-item">Validação das red flags por keyword vs. casos reais</div>
+          <div class="phase-item">Critério de saída: NPS &gt; 50 · médico pagante · 0 incidentes graves</div>
+        </div>
+      </div>
+      <div class="phase reveal" style="transition-delay:0.2s">
+        <div class="phase-header">
+          <span class="phase-num future">3</span>
+          <p class="phase-title">Fase 3 — Escala com Care Plus · 6 meses</p>
+          <span class="phase-status future">Futuro</span>
+        </div>
+        <div class="phase-items">
+          <div class="phase-item">Piloto com operadora de saúde em doenças crônicas</div>
+          <div class="phase-item">Multi-tenancy (schema por cliente) · SOC 2 Type 2</div>
+          <div class="phase-item">Classificador supervisionado substituindo keyword-matching</div>
+          <div class="phase-item">Expansão da base RAG com protocolos parceiros</div>
+        </div>
+      </div>
+    </div>
+    <!-- Phone mocks com badges técnicos -->
+    <div style="display:flex;flex-direction:column;gap:20px;" class="reveal" style="transition-delay:0.15s">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="phone-mock">
+          <div class="phone-topbar">Paciente · Início</div>
+          <div class="phone-body">
+            <div class="phone-logo">Care<br>Plus</div>
+            <p class="phone-welcome">Score de Saúde</p>
+            <div style="text-align:center;margin-bottom:14px;">
+              <span style="font-size:48px;font-weight:900;color:var(--blue-bright)">95</span>
+              <p style="font-size:13px;color:#4ade80;font-weight:700">Estável</p>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;color:var(--gray-2)">
+              <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:10px;text-align:center"><span style="display:block;font-size:16px;font-weight:800;color:#fff">78</span>FC bpm</div>
+              <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:10px;text-align:center"><span style="display:block;font-size:16px;font-weight:800;color:#fff">9.4k</span>Passos</div>
+              <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:10px;text-align:center"><span style="display:block;font-size:16px;font-weight:800;color:#fff">7,5h</span>Sono</div>
+              <div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:10px;text-align:center"><span style="display:block;font-size:16px;font-weight:800;color:var(--blue-bright)">95%</span>Meta</div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-mock">
+          <div class="phone-topbar">Chat IA · Paciente</div>
+          <div class="phone-body" style="padding:16px 14px">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="background:var(--blue);color:#fff;border-radius:10px 10px 2px 10px;padding:10px 13px;font-size:12px;align-self:flex-end;max-width:80%">Tenho dúvida sobre minha pressão</div>
+              <div style="background:rgba(255,255,255,0.07);border-radius:10px 10px 10px 2px;padding:10px 13px;font-size:12px;color:var(--gray-1);max-width:90%">Com base no seu histórico do wearable e no Protocolo HAS 2024, sua FC de repouso está normal. Porém recomendo agendar consulta com Dra. Helena para avaliação.<br><span style="font-size:10px;color:var(--gray-2);margin-top:4px;display:block">⚠ Não substitui consulta médica</span></div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">
+                <span style="font-size:10px;background:rgba(51,85,255,0.15);border:1px solid rgba(51,85,255,0.3);border-radius:4px;padding:2px 7px;color:var(--blue-bright)">intent: queixa_sintoma</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px 24px;">
+        <p style="font-size:14px;font-weight:700;color:var(--blue-bright);margin-bottom:10px;letter-spacing:0.06em;text-transform:uppercase;">Custo operacional</p>
+        <p style="font-size:15px;color:var(--gray-2);line-height:1.7;">Llama 3.1 70B via Groq: <strong style="color:#fff">US$ 0,59/M tokens in · US$ 0,79/M tokens out</strong>. Para 1.000 pacientes com 5 mensagens/dia: <strong style="color:var(--blue-bright)">~US$ 30/mês</strong>. Embeddings rodando localmente no Blua — sem custo por chamada. <span style="color:var(--gray-2);">10× mais barato que GPT-4 (US$ 30/M tokens).</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PAGE 08 — ENCERRAMENTO -->
+<section id="ending" style="max-width:none">
+  <div class="ending-glow"></div>
+  <svg style="position:absolute;left:-40px;top:50%;transform:translateY(-50%);opacity:0.15" width="200" height="260" viewBox="0 0 200 260" fill="none">
+    <path d="M20 20 L160 130 L20 240" stroke="#3355FF" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M70 20 L210 130 L70 240" stroke="#3355FF" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.4"/>
+  </svg>
+  <svg style="position:absolute;right:-40px;top:50%;transform:translateY(-50%) scaleX(-1);opacity:0.15" width="200" height="260" viewBox="0 0 200 260" fill="none">
+    <path d="M20 20 L160 130 L20 240" stroke="#3355FF" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M70 20 L210 130 L70 240" stroke="#3355FF" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.4"/>
+  </svg>
+
+  <div class="ending-content">
+    <p class="ending-question reveal">A próxima pergunta é: vamos fazer isso juntos?</p>
+    <h2 class="ending-obrigado reveal" style="transition-delay:0.1s">Obrigado!</h2>
+    <p class="ending-project reveal" style="transition-delay:0.2s">CarePlus Predict V2 · Grupo NextGen · 1TDSPE</p>
+    <div class="ending-team reveal" style="transition-delay:0.25s">
+      <p class="ending-member">Gustavo Franzoti Gonçalves — RM 566983</p>
+      <p class="ending-member">Lincoln Simão Pereira — RM 567284</p>
+      <p class="ending-member">Maykon Santana Fonseca — RM 567041</p>
+      <p class="ending-member">Nicolas Sakaue Nishimura — RM 567752</p>
+    </div>
+    <div class="ending-meta reveal" style="transition-delay:0.3s">
+      <span>FIAP · Junho 2026</span>
+      <span style="color:var(--blue-bright)">·</span>
+      <span>Orientador: Prof. Dr. Allan Roberto Molto</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>Blua · CarePlus Predict V2 · Grupo NextGen · FIAP 2026</span>
+  <div class="footer-links">
+    <a href="#">Privacidade</a>
+    <a href="#">LGPD</a>
+    <a href="#">CFM 2.314/2022</a>
+    <a href="#">Contato</a>
+  </div>
+</footer>
+
+<style>
+/* ── PRESENTATION MODE ── */
+body.present-mode {
+  overflow: hidden;
+}
+body.present-mode .divider { display: none; }
+body.present-mode footer { display: none; }
+
+body.present-mode section,
+body.present-mode #hero,
+body.present-mode #ending {
+  position: fixed !important;
+  inset: 0;
+  width: 100vw;
+  max-width: 100vw;
+  min-height: 100vh;
+  height: 100vh;
+  padding: 88px 80px 88px !important;
+  margin: 0 !important;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  /* slide states */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(40px);
+  transition: opacity 0.55s cubic-bezier(.4,0,.2,1),
+              transform 0.55s cubic-bezier(.4,0,.2,1);
+  z-index: 2;
+}
+body.present-mode section.slide-active,
+body.present-mode #hero.slide-active,
+body.present-mode #ending.slide-active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+  z-index: 3;
+}
+body.present-mode section.slide-exit,
+body.present-mode #hero.slide-exit,
+body.present-mode #ending.slide-exit {
+  opacity: 0;
+  transform: translateY(-40px);
+  pointer-events: none;
+  z-index: 2;
+}
+/* reveal all children instantly in present mode */
+body.present-mode .reveal { opacity: 1 !important; transform: none !important; }
+
+/* ── PRESENTATION CONTROLS ── */
+#pres-controls {
+  display: none;
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  background: rgba(5,5,8,0.92);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  padding: 12px 24px;
+  gap: 24px;
+  align-items: center;
+}
+body.present-mode #pres-controls { display: flex; }
+
+.pres-btn {
+  background: none;
+  border: none;
+  color: #A0A0B0;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 20px;
+  line-height: 1;
+  transition: color 0.2s, background 0.2s;
+  display: flex; align-items: center;
+}
+.pres-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
+.pres-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+#pres-counter {
+  font-size: 15px;
+  font-weight: 700;
+  color: #A0A0B0;
+  letter-spacing: 0.08em;
+  min-width: 60px;
+  text-align: center;
+}
+
+#pres-dots {
+  display: flex; gap: 8px; align-items: center;
+}
+.pres-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: background 0.2s, width 0.2s;
+}
+.pres-dot.active {
+  background: #3355FF;
+  width: 20px;
+  border-radius: 3px;
+}
+
+/* ── TOGGLE BUTTON (always visible) ── */
+#pres-toggle {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 300;
+  background: #3355FF;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 24px rgba(51,85,255,0.4);
+  transition: background 0.2s, transform 0.15s;
+}
+#pres-toggle:hover { background: #4D6BFF; transform: translateY(-1px); }
+
+/* click-anywhere overlay (present mode) */
+#click-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  cursor: pointer;
+}
+body.present-mode #click-overlay { display: block; }
+body.present-mode #pres-controls,
+body.present-mode #pres-toggle { z-index: 250; pointer-events: all; }
+</style>
+
+<!-- Click overlay (advance on click anywhere) -->
+<div id="click-overlay" onclick="presNext()"></div>
+
+<!-- Presentation controls bar -->
+<div id="pres-controls">
+  <button class="pres-btn" id="pres-prev" onclick="presGo(currentSlide-1)" title="Anterior (←)">&#8592;</button>
+  <div id="pres-dots"></div>
+  <span id="pres-counter">1 / 8</span>
+  <button class="pres-btn" id="pres-next" onclick="presNext()" title="Próximo (→ / Espaço / Clique)">&#8594;</button>
+  <button class="pres-btn" onclick="exitPresMode()" title="Sair (Esc)" style="margin-left:8px;font-size:16px;border-left:1px solid rgba(255,255,255,0.1);padding-left:20px;">✕</button>
+</div>
+
+<!-- Toggle button -->
+<button id="pres-toggle" onclick="togglePresMode()">
+  <svg width="15" height="15" viewBox="0 0 14 14" fill="none" id="pres-icon">
+    <rect x="1" y="1" width="12" height="9" rx="1.5" stroke="white" stroke-width="1.5" fill="none"/>
+    <path d="M5 13h4M7 10v3" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>
+  <span id="pres-toggle-label">Apresentar</span>
+</button>
+
+<script>
+const SLIDE_IDS = ['hero','dores','processo','projeto','painel','ia','roadmap','ending'];
+const SLIDE_LABELS = ['Page 01','Page 02','Page 03','Page 04','Page 05','Page 06','Page 07','Page 08'];
+let currentSlide = 0;
+let presentMode = false;
+let transitioning = false;
+
+const badge = document.getElementById('page-badge');
+const dotsContainer = document.getElementById('pres-dots');
+const counter = document.getElementById('pres-counter');
+
+// Build dots
+SLIDE_IDS.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'pres-dot' + (i === 0 ? ' active' : '');
+  d.onclick = (e) => { e.stopPropagation(); presGo(i); };
+  dotsContainer.appendChild(d);
+});
+
+function getSlideEl(i) {
+  return document.getElementById(SLIDE_IDS[i]);
+}
+
+function updateDots(i) {
+  document.querySelectorAll('.pres-dot').forEach((d, idx) => {
+    d.classList.toggle('active', idx === i);
+  });
+  counter.textContent = `${i+1} / ${SLIDE_IDS.length}`;
+  badge.textContent = SLIDE_LABELS[i];
+  document.getElementById('pres-prev').disabled = i === 0;
+  document.getElementById('pres-next').disabled = i === SLIDE_IDS.length - 1;
+}
+
+function presGo(target) {
+  if (!presentMode || transitioning) return;
+  if (target < 0 || target >= SLIDE_IDS.length) return;
+  if (target === currentSlide) return;
+
+  transitioning = true;
+  const from = getSlideEl(currentSlide);
+  const to = getSlideEl(target);
+
+  from.classList.remove('slide-active');
+  from.classList.add('slide-exit');
+  to.classList.add('slide-active');
+
+  currentSlide = target;
+  updateDots(currentSlide);
+
+  setTimeout(() => {
+    from.classList.remove('slide-exit');
+    transitioning = false;
+  }, 580);
+}
+
+function presNext() {
+  if (currentSlide < SLIDE_IDS.length - 1) presGo(currentSlide + 1);
+}
+function presPrev() {
+  if (currentSlide > 0) presGo(currentSlide - 1);
+}
+
+function enterPresMode() {
+  presentMode = true;
+  document.body.classList.add('present-mode');
+
+  let best = 0;
+  SLIDE_IDS.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 300) best = i;
+  });
+  currentSlide = best;
+
+  SLIDE_IDS.forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.classList.remove('slide-active','slide-exit');
+  });
+  getSlideEl(currentSlide).classList.add('slide-active');
+  updateDots(currentSlide);
+
+  document.getElementById('pres-toggle-label').textContent = 'Sair';
+  document.getElementById('pres-icon').innerHTML = `<path d="M2 2l10 10M12 2L2 12" stroke="white" stroke-width="1.5" stroke-linecap="round"/>`;
+}
+
+function exitPresMode() {
+  presentMode = false;
+  document.body.classList.remove('present-mode');
+  SLIDE_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('slide-active','slide-exit');
+  });
+  document.getElementById('pres-toggle-label').textContent = 'Apresentar';
+  document.getElementById('pres-icon').innerHTML = `<rect x="1" y="1" width="12" height="9" rx="1.5" stroke="white" stroke-width="1.5" fill="none"/><path d="M5 13h4M7 10v3" stroke="white" stroke-width="1.5" stroke-linecap="round"/>`;
+  getSlideEl(currentSlide).scrollIntoView({ behavior:'smooth' });
+}
+
+function togglePresMode() {
+  presentMode ? exitPresMode() : enterPresMode();
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (!presentMode) {
+    if (e.key === 'F5' || (e.key === 'p' && e.ctrlKey)) { e.preventDefault(); enterPresMode(); }
+    return;
+  }
+  if (e.key === 'Escape') { exitPresMode(); return; }
+  if (['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key)) { e.preventDefault(); presNext(); }
+  if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); presPrev(); }
+});
+
+// Scroll mode: page badge update
+const sections = SLIDE_IDS.map((id, i) => ({ el: document.getElementById(id), label: SLIDE_LABELS[i] }));
+window.addEventListener('scroll', () => {
+  if (presentMode) return;
+  let current = sections[0];
+  sections.forEach(s => { if (window.scrollY >= s.el.offsetTop - 200) current = s; });
+  badge.textContent = current.label;
+}, { passive: true });
+
+// Scroll reveal (non-present mode)
+const reveals = document.querySelectorAll('.reveal');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+reveals.forEach(r => revealObs.observe(r));
+</script>
+</body>
+</html>
